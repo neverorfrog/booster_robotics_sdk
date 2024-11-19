@@ -34,3 +34,12 @@ cmake .. -DBUILD_PYTHON_BINDING=on
 make
 sudo make install
 ```
+
+## License
+
+This project is licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+
+This project uses the following third-party libraries:
+- fastDDS (Apache License 2.0)
+- pybind11 (BSD 3-Clause License)
+- pybind11-stubgen (MIT License)
