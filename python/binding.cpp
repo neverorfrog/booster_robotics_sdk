@@ -118,7 +118,6 @@ private:
     py::function py_handler_;
     const std::string channel_name_ = kTopicOdometerState;
 };
-
 } // namespace booster::robot::b1
 
 PYBIND11_MODULE(booster_robotics_sdk_python, m) {
@@ -181,7 +180,7 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
         .value("kHandOpen", robot::b1::HandAction::kHandOpen)
         .value("kHandClose", robot::b1::HandAction::kHandClose)
         .export_values();
-    
+
     py::enum_<robot::b1::HandIndex>(m, "B1HandIndex")
         .value("kLeftHand", robot::b1::HandIndex::kLeftHand)
         .value("kRightHand", robot::b1::HandIndex::kRightHand)
@@ -189,13 +188,62 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
 
     py::class_<robot::b1::B1LocoClient>(m, "B1LocoClient")
         .def(py::init<>())
-        .def("Init", py::overload_cast<>(&robot::b1::B1LocoClient::Init))
-        .def("Init", py::overload_cast<const std::string &>(&robot::b1::B1LocoClient::Init))
-        .def("SendApiRequest", &robot::b1::B1LocoClient::SendApiRequest, py::arg("api_id"), py::arg("param"))
-        .def("ChangeMode", &robot::b1::B1LocoClient::ChangeMode, py::arg("mode"))
-        .def("Move", &robot::b1::B1LocoClient::Move, py::arg("vx"), py::arg("vy"), py::arg("vyaw"))
-        .def("RotateHead", &robot::b1::B1LocoClient::RotateHead, py::arg("pitch"), py::arg("yaw"))
-        .def("WaveHand", &robot::b1::B1LocoClient::WaveHand);
+        .def("Init", py::overload_cast<>(&robot::b1::B1LocoClient::Init), "Init")
+        .def("Init", py::overload_cast<const std::string &>(&robot::b1::B1LocoClient::Init), "Init with robot name")
+        .def("SendApiRequest", &robot::b1::B1LocoClient::SendApiRequest, py::arg("api_id"), py::arg("param"),
+             R"pbdoc(
+                /**
+                 * @brief Send API request to B1 robot
+                 * 
+                 * @param api_id API_ID, you can find the API_ID in b1_api_const.hpp
+                 * @param param API parameter
+                 * 
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
+        .def("ChangeMode", &robot::b1::B1LocoClient::ChangeMode, py::arg("mode"),
+             R"pbdoc(
+                /**
+                 * @brief Change robot mode
+                 * 
+                 * @param mode robot mode, options are: kDamping, kPrepare, kWalking
+                 * 
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
+        .def("Move", &robot::b1::B1LocoClient::Move, py::arg("vx"), py::arg("vy"), py::arg("vyaw"),
+             R"pbdoc(
+                /**
+                 * @brief Move robot
+                 * 
+                 * @param vx linear velocity in x direction, unit: m/s
+                 * @param vy linear velocity in y direction, unit: m/s
+                 * @param vyaw angular velocity, unit: rad/s
+                 * 
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
+        .def("RotateHead", &robot::b1::B1LocoClient::RotateHead, py::arg("pitch"), py::arg("yaw"),
+             R"pbdoc(
+                 /**
+                 * @brief Robot rotates its head
+                 *
+                 * @param pitch pitch angle, unit: rad
+                 * @param yaw yaw angle, unit: rad
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
+        .def("WaveHand", &robot::b1::B1LocoClient::WaveHand, py::arg("HandAction"),
+             R"pbdoc(
+                 /**
+                 * @brief Robot waves hand
+                 *
+                 * @param HandAction hand action, options are: kHandOpen, kHandClose
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc");
 
     py::class_<booster_interface::msg::ImuState>(m, "ImuState")
         .def(py::init<>())
@@ -302,17 +350,31 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
         .def("__ne__", &booster_interface::msg::LowCmd::operator!=);
 
     py::class_<robot::b1::B1LowStateSubscriber>(m, "B1LowStateSubscriber")
-        .def(py::init<const py::function &>())
-        .def("InitChannel", &robot::b1::B1LowStateSubscriber::InitChannel)
-        .def("CloseChannel", &robot::b1::B1LowStateSubscriber::CloseChannel)
-        .def("GetChannelName", &robot::b1::B1LowStateSubscriber::GetChannelName);
+        .def(py::init<const py::function &>(), py::arg("handler"), R"pbdoc(
+                 /**
+                 * @brief init low state subscriber with callback handler
+                 *
+                 * @param handler callback handler of low state, the handler should accept one parameter of type LowState
+                 *
+                 */
+            )pbdoc")
+        .def("InitChannel", &robot::b1::B1LowStateSubscriber::InitChannel, "Init low state subscription channel")
+        .def("CloseChannel", &robot::b1::B1LowStateSubscriber::CloseChannel, "Close low state subscription channel")
+        .def("GetChannelName", &robot::b1::B1LowStateSubscriber::GetChannelName, "Get low state subscription channel name");
 
     py::class_<robot::b1::B1LowCmdPublisher>(m, "B1LowCmdPublisher")
         .def(py::init<>())
-        .def("InitChannel", &robot::b1::B1LowCmdPublisher::InitChannel)
-        .def("Write", &robot::b1::B1LowCmdPublisher::Write, py::arg("msg"))
-        .def("CloseChannel", &robot::b1::B1LowCmdPublisher::CloseChannel)
-        .def("GetChannelName", &robot::b1::B1LowCmdPublisher::GetChannelName);
+        .def("InitChannel", &robot::b1::B1LowCmdPublisher::InitChannel, "Init low cmd publication channel")
+        .def("Write", &robot::b1::B1LowCmdPublisher::Write, py::arg("msg"), R"pbdoc(
+                 /**
+                 * @brief write low cmd message into channel, i.e. publish low cmd message
+                 *
+                 * @param msg LowCmd
+                 *
+                 */
+            )pbdoc")
+        .def("CloseChannel", &robot::b1::B1LowCmdPublisher::CloseChannel, "Close low cmd publication channel")
+        .def("GetChannelName", &robot::b1::B1LowCmdPublisher::GetChannelName, "Get low cmd publication channel name");
 
     py::class_<booster_interface::msg::Odometer>(m, "Odometer")
         .def(py::init<>())
@@ -323,15 +385,21 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                       (float(booster_interface::msg::Odometer::*)() const) & booster_interface::msg::Odometer::y,
                       (void(booster_interface::msg::Odometer::*)(float)) & booster_interface::msg::Odometer::y)
         .def_property("theta",
-                        (float(booster_interface::msg::Odometer::*)() const) & booster_interface::msg::Odometer::theta,
-                        (void(booster_interface::msg::Odometer::*)(float)) & booster_interface::msg::Odometer::theta);
-    
-    py::class_<robot::b1::B1OdometerStateSubscriber>(m, "B1OdometerStateSubscriber")
-        .def(py::init<const py::function &>())
-        .def("InitChannel", &robot::b1::B1OdometerStateSubscriber::InitChannel)
-        .def("CloseChannel", &robot::b1::B1OdometerStateSubscriber::CloseChannel)
-        .def("GetChannelName", &robot::b1::B1OdometerStateSubscriber::GetChannelName);
+                      (float(booster_interface::msg::Odometer::*)() const) & booster_interface::msg::Odometer::theta,
+                      (void(booster_interface::msg::Odometer::*)(float)) & booster_interface::msg::Odometer::theta);
 
+    py::class_<robot::b1::B1OdometerStateSubscriber>(m, "B1OdometerStateSubscriber")
+        .def(py::init<const py::function &>(), py::arg("handler"), R"pbdoc(
+                 /**
+                 * @brief init odometer state subscriber with callback handler
+                 *
+                 * @param handler callback handler of odom state, the handler should accept one parameter of type Odometer
+                 *
+                 */
+            )pbdoc")
+        .def("InitChannel", &robot::b1::B1OdometerStateSubscriber::InitChannel, "Init odometer subscription channel")
+        .def("CloseChannel", &robot::b1::B1OdometerStateSubscriber::CloseChannel, "Close odometer subscription channel")
+        .def("GetChannelName", &robot::b1::B1OdometerStateSubscriber::GetChannelName, "Get odometer subscription channel name");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
