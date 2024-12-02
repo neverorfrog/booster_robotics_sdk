@@ -23,7 +23,6 @@ mkdir build
 cd build
 cmake ..
 make
-sudo make install
 ```
 
 ## Build python binding api and install

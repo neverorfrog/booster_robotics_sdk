@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
 
   booster::robot::ChannelFactory::Instance()->Init(0, argv[1]);
 
-  booster::robot::ChannelPublisherPtr< booster_interface::msg::LowCmd>
+  booster::robot::ChannelPublisherPtr<booster_interface::msg::LowCmd>
       low_sdk_publisher;
   booster_interface::msg::LowCmd msg;
 
