@@ -67,8 +67,8 @@ int main(int argc, char const *argv[]) {
   int init_time_steps = static_cast<int>(init_time / control_dt);
 
   for (size_t i = 0; i < booster::robot::b1::kJointCnt; i++) {
-    booster_interface::msg::MotorCmd motor_cmd;
-    msg.motor_cmd().push_back(motor_cmd);
+      booster_interface::msg::MotorCmd motor_cmd;
+      msg.motor_cmd().push_back(motor_cmd);
   }
 
   for (int i = 0; i < init_time_steps; ++i) {
