@@ -132,8 +132,8 @@ public:
     /**
      *  @brief Move hand end-effector to a target posture(position & orientation) with an auxiliary point
      *
-     *  @param target_posture Represents the target posture in camera frame that the hand end-effector should reach. 
-     *  It contains position & orientation. Use torso frame as the reference frame.
+     *  @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach. 
+     *  It contains position & orientation.
      *  @param aux_posture Represents the auxiliary point on the end-effector's motion arc trajectory
      *  @param time_mills Specifies the duration, in milliseconds, for completing the movement.
      *  @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
@@ -149,7 +149,7 @@ public:
     /**
      *  @brief Move hand end-effector with a target posture(position & orientation)
      *
-     *  @param target_posture Represents the target posture in camera frame that the hand end-effector should reach. It contains position & orientation. The frame transition will be calculated automatically.
+     *  @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach. It contains position & orientation.
      *  @param time_mills Specifies the duration, in milliseconds, for completing the movement.
      *  @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
      *
@@ -165,7 +165,7 @@ public:
      * @brief Control gripper
      *
      * @param motion_param motion parameter, include position, force, velocity, see `GripperMotionParameter`
-     * @param mode gripper control mode, options are: kPosition, kTorque, see `GripperControlMode`
+     * @param mode gripper control mode, options are: kPosition, kForce, see `GripperControlMode`
      * @param hand_index hand index, options are: kLeftHand, kRightHand
      *
      * @return 0 if success, otherwise return error code
