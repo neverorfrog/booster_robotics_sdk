@@ -220,9 +220,9 @@ enum class GripperControlMode {
     // or when it experiences a specific reaction force, this reaction force
     // specified in the motion parameter
     kPosition = 0,
-    // torque mode, if the gripper not reaches the target position, the gripper will
-    // continue to move with the torque specified in the motion parameter
-    kTorque = 1
+    // force mode, if the gripper not reaches the target position, the gripper will
+    // continue to move with the force specified in the motion parameter
+    kForce = 1
 };
 
 /**

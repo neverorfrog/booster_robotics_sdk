@@ -95,6 +95,10 @@ public:
     Orientation orientation_;
 };
 
+/**
+ *  This class definition represents a 4D quaternion.
+ *  quaternion is in x, y, z, w format.
+ */
 class Quaternion {
 public:
     Quaternion() = default;
@@ -124,6 +128,9 @@ public:
     float w_ = 0.;
 };
 
+/**
+ *  This class definition represents a 3D transform in space with position and orientation.
+ */
 class Transform {
 public:
     Transform() = default;
