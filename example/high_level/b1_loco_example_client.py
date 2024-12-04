@@ -92,6 +92,10 @@ def main():
                 res = client.GetFrameTransform(src, dst, transform)
                 if res == 0:
                     print(f"Transform: {transform}")
+            elif input_cmd == "hcm-start":
+                res = client.SwitchHandEndEffectorControlMode(True)
+            elif input_cmd == "hcm-stop":
+                res = client.SwitchHandEndEffectorControlMode(False)
 
             if need_print:
                 print(f"Param: {x} {y} {z}")
