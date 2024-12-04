@@ -358,6 +358,16 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                  *
                  * @return 0 if success, otherwise return error code
                  */
+                )pbdoc")
+        .def("SwitchHandEndEffectorControlMode", &robot::b1::B1LocoClient::SwitchHandEndEffectorControlMode, py::arg("switch_on"),
+             R"pbdoc(
+                /**
+                 * @brief Switch hand end-effector control mode
+                 * 
+                 * @param switch_on true to switch on, false to switch off
+                 * 
+                 * @return 0 if success, otherwise return error code
+                 */
                 )pbdoc");
 
     py::class_<ImuState>(m, "ImuState")

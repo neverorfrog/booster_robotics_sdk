@@ -138,6 +138,10 @@ int main(int argc, char const *argv[]) {
                     << " " << transform.orientation_.z_ << " "
                     << transform.orientation_.w_ << std::endl;
         }
+      } else if (input == "hcm-start") {
+        res = client.SwitchHandEndEffectorControlMode(true);
+      } else if (input == "hcm-stop") {
+        res = client.SwitchHandEndEffectorControlMode(false);
       }
 
       if (need_print) {

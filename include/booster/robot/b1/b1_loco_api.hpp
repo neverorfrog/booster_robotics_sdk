@@ -28,7 +28,8 @@ enum class LocoApiId {
     kGetUp = 2008,
     kMoveHandEndEffector = 2009,
     kControlGripper = 2010,
-    kGetFrameTransform = 2011
+    kGetFrameTransform = 2011,
+    kSwitchHandEndEffectorControlMode = 2012
 };
 
 class RotateHeadParameter {
@@ -323,6 +324,28 @@ public:
     Frame src_;
     Frame dst_;
 
+};
+
+class SwitchHandEndEffectorControlModeParameter {
+public:
+    SwitchHandEndEffectorControlModeParameter() = default;
+    SwitchHandEndEffectorControlModeParameter(bool switch_on) :
+        switch_on_(switch_on) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        switch_on_ = json["switch_on"];
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["switch_on"] = switch_on_;
+        return json;
+    }
+
+public:
+    bool switch_on_;
 };
 
 }

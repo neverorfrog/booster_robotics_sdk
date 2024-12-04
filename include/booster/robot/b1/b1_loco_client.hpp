@@ -198,6 +198,19 @@ public:
         return 0;
     }
 
+    /**
+     * @brief Switch hand end-effector control mode
+     * 
+     * @param switch_on true to switch on, false to switch off
+     * 
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t SwitchHandEndEffectorControlMode(bool switch_on) {
+        SwitchHandEndEffectorControlModeParameter switch_param(switch_on);
+        std::string param = switch_param.ToJson().dump();
+        return SendApiRequest(LocoApiId::kSwitchHandEndEffectorControlMode, param);
+    }
+
 private:
     std::shared_ptr<RpcClient> rpc_client_;
 };
