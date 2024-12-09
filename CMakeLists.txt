@@ -17,6 +17,7 @@ link_libraries(booster_robotics_sdk.a fastrtps fastcdr libfoonathan_memory-0.7.3
 
 add_executable(b1_loco_example_client example/high_level/b1_loco_example_client.cpp)
 add_executable(b1_arm_sdk_example_client example/high_level/b1_arm_sdk_example.cpp)
+add_executable(b1_7dof_arm_sdk_example_client example/high_level/b1_7dof_arm_sdk_example.cpp)
 add_executable(b1_low_level_publisher example/low_level/low_level_publisher.cpp)
 add_executable(b1_low_level_subscriber example/low_level/low_level_subscriber.cpp)
 add_executable(b1_low_sdk_example example/low_level/b1_low_sdk_example.cpp)
