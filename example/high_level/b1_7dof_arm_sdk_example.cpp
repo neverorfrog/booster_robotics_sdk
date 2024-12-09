@@ -19,35 +19,41 @@ enum JointIndex {
     kLeftShoulderRoll = 3,
     kLeftElbowPitch = 4,
     kLeftElbowYaw = 5,
+    kLeftWristPitch = 6,
+    kLeftWristYaw = 7,
+    kLeftHandRoll = 8,
 
     // Right arm
-    kRightShoulderPitch = 6,
-    kRightShoulderRoll = 7,
-    kRightElbowPitch = 8,
-    kRightElbowYaw = 9,
+    kRightShoulderPitch = 9,
+    kRightShoulderRoll = 10,
+    kRightElbowPitch = 11,
+    kRightElbowYaw = 12,
+    kRightWristPitch = 13,
+    kRightWristYaw = 14,
+    kRightHandRoll = 15,
 
     // waist
-    kWaist = 10,
+    kWaist = 16,
 
     // left leg
-    kLeftHipPitch = 11,
-    kLeftHipRoll = 12, 
-    kLeftHipYaw = 13,
-    kLeftKneePitch = 14,
-    kCrankUpLeft = 15,
-    kCrankDownLeft = 16,
+    kLeftHipPitch = 17,
+    kLeftHipRoll = 18, 
+    kLeftHipYaw = 19,
+    kLeftKneePitch = 20,
+    kCrankUpLeft = 21,
+    kCrankDownLeft = 22,
 
     // right leg
-    kRightHipPitch = 17,
-    kRightHipRoll = 18,
-    kRightHipYaw = 19,
-    kRightKneePitch = 20,
-    kCrankUpRight = 21,
-    kCrankDownRight = 22,
+    kRightHipPitch = 23,
+    kRightHipRoll = 24,
+    kRightHipYaw = 25,
+    kRightKneePitch = 26,
+    kCrankUpRight = 27,
+    kCrankDownRight = 28,
 };
 
 static const std::string kTopicArmSDK = "rt/joint_ctrl";
-static const size_t kJointCnt = 23;
+static const size_t kJointCnt = 29;
 
 int main(int argc, char const *argv[]) {
   if (argc < 2) {
@@ -66,16 +72,21 @@ int main(int argc, char const *argv[]) {
           kTopicArmSDK));
   arm_sdk_publisher->InitChannel();
 
-  std::array<JointIndex, 8> arm_joints = {
+  std::array<JointIndex, 14> arm_joints = {
       JointIndex::kLeftShoulderPitch,  JointIndex::kLeftShoulderRoll,
       JointIndex::kLeftElbowPitch,    JointIndex::kLeftElbowYaw,
+      JointIndex::kLeftWristPitch,    JointIndex::kLeftWristYaw,
+      JointIndex::kLeftHandRoll,
       JointIndex::kRightShoulderPitch, JointIndex::kRightShoulderRoll,
-      JointIndex::kRightElbowPitch,   JointIndex::kRightElbowYaw};
+      JointIndex::kRightElbowPitch,   JointIndex::kRightElbowYaw,
+      JointIndex::kRightWristPitch,   JointIndex::kRightWristYaw,
+      JointIndex::kRightHandRoll
+      };
 
   float weight = 0.f;
   float weight_rate = 0.2f;
 
-  float kp = 60.f;
+  float kp = 55.f;
   float kd = 1.5f;
   float dq = 0.f;
   float tau_ff = 0.f;
@@ -88,10 +99,10 @@ int main(int argc, char const *argv[]) {
   auto sleep_time =
       std::chrono::milliseconds(static_cast<int>(control_dt / 0.001f));
 
-  std::array<float, 8> init_pos{};
+  std::array<float, 14> init_pos{};
 
-  std::array<float, 8> target_pos = {0.1f, -1.5,  0.0, -0.2,
-                                     0.1f, 1.5, 0.f, 0.2};
+  std::array<float, 14> target_pos = {0.25f, -1.4,  0.0, -0.5, 0, 0, 0,
+                                     0.25f, 1.4, 0.f, 0.5, 0, 0, 0};
 
   // wait for init
   std::cout << "Press ENTER to init arms ...";
@@ -138,10 +149,10 @@ int main(int argc, char const *argv[]) {
 
   // start control
   std::cout << "Start arm ctrl!" << std::endl;
-  float period = 5.f;
+  float period = 10.f;
   int num_time_steps = static_cast<int>(period / control_dt);
 
-  std::array<float, 8> current_jpos_des{};
+  std::array<float, 14> current_jpos_des{};
 
   // lift arms up
   for (int i = 0; i < num_time_steps; ++i) {
