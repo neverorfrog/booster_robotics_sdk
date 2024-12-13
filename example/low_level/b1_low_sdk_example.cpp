@@ -62,17 +62,17 @@ int main(int argc, char const *argv[]) {
   auto sleep_time =
       std::chrono::milliseconds(static_cast<int>(control_dt / 0.001f));
 
-  msg.cmd_type(booster_interface::msg::CmdType::SERIAL);
-  // msg.cmd_type(booster_interface::msg::CmdType::PARALLEL);
+  // msg.cmd_type(booster_interface::msg::CmdType::SERIAL);
+  msg.cmd_type(booster_interface::msg::CmdType::PARALLEL);
 
   std::array<float, 23> init_pos{};
 
-  // std::array<float, 23> target_pos = { 0.00,  0.00,
-  //                                     0.10, -1.50,  0.00, -0.20,
-  //                                     0.10,  1.50,  0.00,  0.20,
-  //                                     0.0,
-  //                                     -0.2, 0., 0., 0.4, 0.2, 0.14,
-  //                                     -0.2, 0., 0., 0.4, 0.2, 0.14,};
+  std::array<float, 23> target_pos = { 0.00,  0.00,
+                                      0.10, -1.50,  0.00, -0.20,
+                                      0.10,  1.50,  0.00,  0.20,
+                                      0.0,
+                                      -0.2, 0., 0., 0.4, 0.2, 0.14,
+                                      -0.2, 0., 0., 0.4, 0.2, 0.14,};
 
   // std::array<float, 23> kps = {};
   // std::array<float, 23> kds = {};
@@ -94,12 +94,12 @@ int main(int argc, char const *argv[]) {
     7.5, 7.5, 3., 5.5, 1.5, 1.5,
   };
 
-  std::array<float, 23> target_pos = { 0.00,  0.00,
-                                      0.10, -1.50,  0.00, -0.20,
-                                      0.10,  1.50,  0.00,  0.20,
-                                      0.0,
-                                      -0.2, 0., 0., 0.4, -0.35, 0.03,
-                                      -0.2, 0., 0., 0.4, -0.35, -0.03,};
+  // std::array<float, 23> target_pos = { 0.00,  0.00,
+  //                                     0.10, -1.50,  0.00, -0.20,
+  //                                     0.10,  1.50,  0.00,  0.20,
+  //                                     0.0,
+  //                                     -0.2, 0., 0., 0.4, -0.35, 0.03,
+  //                                     -0.2, 0., 0., 0.4, -0.35, -0.03,};
 
 
   for (size_t i = 0; i < booster::robot::b1::kJointCnt; i++) {
@@ -117,21 +117,21 @@ int main(int argc, char const *argv[]) {
   float period = 50000.f;
   int num_time_steps = static_cast<int>(period / control_dt);
 
-  std::array<float, 23> current_jpos_des{
-                                          0.00,  0.00,
-                                          0.10, -1.50,  0.00, -0.20,
-                                          0.10,  1.50,  0.00,  0.20,
-                                          0.0,
-                                          -0.2, 0., 0., 0.4, 0.2, 0.14,
-                                          -0.2, 0., 0., 0.4, 0.2, 0.14,
-                                        };
+  // std::array<float, 23> current_jpos_des{
+  //                                         0.00,  0.00,
+  //                                         0.10, -1.50,  0.00, -0.20,
+  //                                         0.10,  1.50,  0.00,  0.20,
+  //                                         0.0,
+  //                                         -0.2, 0., 0., 0.4, 0.2, 0.14,
+  //                                         -0.2, 0., 0., 0.4, 0.2, 0.14,
+  //                                       };
 
-  // std::array<float, 23> current_jpos_des = { 0.00,  0.00,
-  //                                     0.10, -1.50,  0.00, -0.20,
-  //                                     0.10,  1.50,  0.00,  0.20,
-  //                                     0.0,
-  //                                     -0.2, 0., 0., 0.4, -0.35, 0.03,
-  //                                     -0.2, 0., 0., 0.4, -0.35, -0.03,};
+  std::array<float, 23> current_jpos_des = { 0.00,  0.00,
+                                      0.10, -1.50,  0.00, -0.20,
+                                      0.10,  1.50,  0.00,  0.20,
+                                      0.0,
+                                      -0.2, 0., 0., 0.4, -0.35, 0.03,
+                                      -0.2, 0., 0., 0.4, -0.35, -0.03,};
 
   // lift lows up
   for (int i = 0; i < num_time_steps; ++i) {
@@ -144,11 +144,11 @@ int main(int argc, char const *argv[]) {
 
     // set control joints
     for (int j = 0; j < init_pos.size(); ++j) {
-      msg.motor_cmd().at(low_joints.at(j)).q(current_jpos_des.at(j));
-      msg.motor_cmd().at(low_joints.at(j)).dq(dq);
-      msg.motor_cmd().at(low_joints.at(j)).kp(kps.at(j));
-      msg.motor_cmd().at(low_joints.at(j)).kd(kds.at(j));
-      msg.motor_cmd().at(low_joints.at(j)).tau(tau_ff);
+      msg.motor_cmd().at(int(low_joints.at(j))).q(current_jpos_des.at(j));
+      msg.motor_cmd().at(int(low_joints.at(j))).dq(dq);
+      msg.motor_cmd().at(int(low_joints.at(j))).kp(kps.at(j));
+      msg.motor_cmd().at(int(low_joints.at(j))).kd(kds.at(j));
+      msg.motor_cmd().at(int(low_joints.at(j))).tau(tau_ff);
     }
 
     // send dds msg
@@ -169,11 +169,11 @@ int main(int argc, char const *argv[]) {
 
   //   // set control joints
   //   for (int j = 0; j < init_pos.size(); ++j) {
-  //     msg.motor_cmd().at(low_joints.at(j)).q(current_jpos_des.at(j));
-  //     msg.motor_cmd().at(low_joints.at(j)).dq(dq);
-  //     msg.motor_cmd().at(low_joints.at(j)).kp(kp);
-  //     msg.motor_cmd().at(low_joints.at(j)).kd(kd);
-  //     msg.motor_cmd().at(low_joints.at(j)).tau(tau_ff);
+  //     msg.motor_cmd().at(int(low_joints.at(j))).q(current_jpos_des.at(j));
+  //     msg.motor_cmd().at(int(low_joints.at(j))).dq(dq);
+  //     msg.motor_cmd().at(int(low_joints.at(j))).kp(kp);
+  //     msg.motor_cmd().at(int(low_joints.at(j))).kd(kd);
+  //     msg.motor_cmd().at(int(low_joints.at(j))).tau(tau_ff);
   //   }
 
   //   // send dds msg

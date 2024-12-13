@@ -12,7 +12,7 @@ static const std::string kTopicLowState = "rt/low_state";
 static const std::string kTopicOdometerState = "rt/odometer_state";
 
 // TODO(@wuyuanye): 按照结构图，把电机的索引完善
-enum JointIndex {
+enum class JointIndex {
     // head
     kHeadYaw = 0,
     kHeadPitch = 1,
@@ -49,7 +49,52 @@ enum JointIndex {
     kCrankDownRight = 22,
 };
 
+enum class JointIndexWith7DofArm {
+    // head
+    kHeadYaw = 0,
+    kHeadPitch = 1,
+
+    // Left arm
+    kLeftShoulderPitch = 2,
+    kLeftShoulderRoll = 3,
+    kLeftElbowPitch = 4,
+    kLeftElbowYaw = 5,
+    kLeftWristPitch = 6,
+    kLeftWristYaw = 7,
+    kLeftHandRoll = 8,
+
+    // Right arm
+    kRightShoulderPitch = 9,
+    kRightShoulderRoll = 10,
+    kRightElbowPitch = 11,
+    kRightElbowYaw = 12,
+    kRightWristPitch = 13,
+    kRightWristYaw = 14,
+    kRightHandRoll = 15,
+
+    // waist
+    kWaist = 16,
+
+    // left leg
+    kLeftHipPitch = 17,
+    kLeftHipRoll = 18, 
+    kLeftHipYaw = 19,
+    kLeftKneePitch = 20,
+    kCrankUpLeft = 21,
+    kCrankDownLeft = 22,
+
+    // right leg
+    kRightHipPitch = 23,
+    kRightHipRoll = 24,
+    kRightHipYaw = 25,
+    kRightKneePitch = 26,
+    kCrankUpRight = 27,
+    kCrankDownRight = 28
+};
+
 static const size_t kJointCnt = 23;
+static const size_t kJointCnt7DofArm = 29;
+
 
 enum HandIndex {
     kLeftHand = 0,
