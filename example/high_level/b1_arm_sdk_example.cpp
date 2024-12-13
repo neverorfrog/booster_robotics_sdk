@@ -7,47 +7,9 @@
 #include <booster/idl/b1/LowCmd.h>
 #include <booster/idl/b1/MotorCmd.h>
 #include <booster/robot/channel/channel_publisher.hpp>
-
-
-enum JointIndex {
-    // head
-    kHeadYaw = 0,
-    kHeadPitch = 1,
-
-    // Left arm
-    kLeftShoulderPitch = 2,
-    kLeftShoulderRoll = 3,
-    kLeftElbowPitch = 4,
-    kLeftElbowYaw = 5,
-
-    // Right arm
-    kRightShoulderPitch = 6,
-    kRightShoulderRoll = 7,
-    kRightElbowPitch = 8,
-    kRightElbowYaw = 9,
-
-    // waist
-    kWaist = 10,
-
-    // left leg
-    kLeftHipPitch = 11,
-    kLeftHipRoll = 12, 
-    kLeftHipYaw = 13,
-    kLeftKneePitch = 14,
-    kCrankUpLeft = 15,
-    kCrankDownLeft = 16,
-
-    // right leg
-    kRightHipPitch = 17,
-    kRightHipRoll = 18,
-    kRightHipYaw = 19,
-    kRightKneePitch = 20,
-    kCrankUpRight = 21,
-    kCrankDownRight = 22,
-};
+#include <booster/robot/b1/b1_api_const.hpp>
 
 static const std::string kTopicArmSDK = "rt/joint_ctrl";
-static const size_t kJointCnt = 23;
 
 int main(int argc, char const *argv[]) {
   if (argc < 2) {
@@ -66,11 +28,11 @@ int main(int argc, char const *argv[]) {
           kTopicArmSDK));
   arm_sdk_publisher->InitChannel();
 
-  std::array<JointIndex, 8> arm_joints = {
-      JointIndex::kLeftShoulderPitch,  JointIndex::kLeftShoulderRoll,
-      JointIndex::kLeftElbowPitch,    JointIndex::kLeftElbowYaw,
-      JointIndex::kRightShoulderPitch, JointIndex::kRightShoulderRoll,
-      JointIndex::kRightElbowPitch,   JointIndex::kRightElbowYaw};
+  std::array<booster::robot::b1::JointIndex, 8> arm_joints = {
+      booster::robot::b1::JointIndex::kLeftShoulderPitch,  booster::robot::b1::JointIndex::kLeftShoulderRoll,
+      booster::robot::b1::JointIndex::kLeftElbowPitch,    booster::robot::b1::JointIndex::kLeftElbowYaw,
+      booster::robot::b1::JointIndex::kRightShoulderPitch, booster::robot::b1::JointIndex::kRightShoulderRoll,
+      booster::robot::b1::JointIndex::kRightElbowPitch,   booster::robot::b1::JointIndex::kRightElbowYaw};
 
   float weight = 0.f;
   float weight_rate = 0.2f;
@@ -102,7 +64,7 @@ int main(int argc, char const *argv[]) {
   float init_time = 5.0f;
   int init_time_steps = static_cast<int>(init_time / control_dt);
 
-  for (size_t i = 0; i < kJointCnt; i++) {
+  for (size_t i = 0; i < booster::robot::b1::kJointCnt; i++) {
       booster_interface::msg::MotorCmd motor_cmd;
       msg.motor_cmd().push_back(motor_cmd);
   }
@@ -115,12 +77,12 @@ int main(int argc, char const *argv[]) {
 
     // set control joints
     for (int j = 0; j < init_pos.size(); ++j) {
-      msg.motor_cmd().at(arm_joints.at(j)).q(init_pos.at(j));
-      msg.motor_cmd().at(arm_joints.at(j)).dq(dq);
-      msg.motor_cmd().at(arm_joints.at(j)).kp(kp);
-      msg.motor_cmd().at(arm_joints.at(j)).kd(kd);
-      msg.motor_cmd().at(arm_joints.at(j)).tau(tau_ff);
-      msg.motor_cmd().at(arm_joints.at(j)).weight(weight);
+      msg.motor_cmd().at(int(arm_joints.at(j))).q(init_pos.at(j));
+      msg.motor_cmd().at(int(arm_joints.at(j))).dq(dq);
+      msg.motor_cmd().at(int(arm_joints.at(j))).kp(kp);
+      msg.motor_cmd().at(int(arm_joints.at(j))).kd(kd);
+      msg.motor_cmd().at(int(arm_joints.at(j))).tau(tau_ff);
+      msg.motor_cmd().at(int(arm_joints.at(j))).weight(weight);
     }
 
     // send dds msg
@@ -154,11 +116,11 @@ int main(int argc, char const *argv[]) {
 
     // set control joints
     for (int j = 0; j < init_pos.size(); ++j) {
-      msg.motor_cmd().at(arm_joints.at(j)).q(current_jpos_des.at(j));
-      msg.motor_cmd().at(arm_joints.at(j)).dq(dq);
-      msg.motor_cmd().at(arm_joints.at(j)).kp(kp);
-      msg.motor_cmd().at(arm_joints.at(j)).kd(kd);
-      msg.motor_cmd().at(arm_joints.at(j)).tau(tau_ff);
+      msg.motor_cmd().at(int(arm_joints.at(j))).q(current_jpos_des.at(j));
+      msg.motor_cmd().at(int(arm_joints.at(j))).dq(dq);
+      msg.motor_cmd().at(int(arm_joints.at(j))).kp(kp);
+      msg.motor_cmd().at(int(arm_joints.at(j))).kd(kd);
+      msg.motor_cmd().at(int(arm_joints.at(j))).tau(tau_ff);
     }
 
     // send dds msg
