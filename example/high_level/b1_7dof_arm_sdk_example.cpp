@@ -39,6 +39,7 @@ int main(int argc, char const *argv[]) {
       booster::robot::b1::JointIndexWith7DofArm::kRightHandRoll
       };
 
+  // init control params
   float weight = 0.f;
   float weight_rate = 0.2f;
 
@@ -74,6 +75,7 @@ int main(int argc, char const *argv[]) {
       msg.motor_cmd().push_back(motor_cmd);
   }
 
+  // init joints
   for (int i = 0; i < init_time_steps; ++i) {
     // increase weight
     weight += weight_margin;

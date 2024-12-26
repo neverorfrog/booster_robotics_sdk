@@ -25,6 +25,23 @@ cmake ..
 make
 ```
 
+## Run examples
+### 1. run b1_arm_sdk_example_client locally
+```
+cd build
+./b1_arm_sdk_example_client 127.0.0.1
+```
+### 2. run b1_7dof_arm_sdk_example_client locally
+```
+cd build
+./b1_7dof_arm_sdk_example_client 127.0.0.1
+```
+### 3. run other example xxx locally
+```
+cd build
+./xxx 127.0.0.1
+```
+
 ## Build python binding api and install
 ```bash
 mkdir build
