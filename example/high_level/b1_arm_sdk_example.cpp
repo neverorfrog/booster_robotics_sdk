@@ -34,6 +34,7 @@ int main(int argc, char const *argv[]) {
       booster::robot::b1::JointIndex::kRightShoulderPitch, booster::robot::b1::JointIndex::kRightShoulderRoll,
       booster::robot::b1::JointIndex::kRightElbowPitch,   booster::robot::b1::JointIndex::kRightElbowYaw};
 
+  // init control params
   float weight = 0.f;
   float weight_rate = 0.2f;
 
@@ -50,8 +51,10 @@ int main(int argc, char const *argv[]) {
   auto sleep_time =
       std::chrono::milliseconds(static_cast<int>(control_dt / 0.001f));
 
+  // init pos
   std::array<float, 8> init_pos{};
 
+  // target pos
   std::array<float, 8> target_pos = {0.1f, -1.5,  0.0, -0.2,
                                      0.1f, 1.5, 0.f, 0.2};
 

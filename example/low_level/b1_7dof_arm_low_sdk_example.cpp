@@ -70,10 +70,8 @@ int main(int argc, char const *argv[]) {
   msg.cmd_type(booster_interface::msg::CmdType::PARALLEL);
 
   std::array<float, 29> init_pos{};
-
-  // std::array<float, 29> kps = {};
-  // std::array<float, 29> kds = {};
   
+  // define kp for each joint
   std::array<float, 29> kps = {
       5., 5.,
       70., 70., 70., 70., 50., 70., 50.,
@@ -82,6 +80,8 @@ int main(int argc, char const *argv[]) {
       350., 350., 180., 350., 450., 450.,
       350., 350., 180., 350., 450., 450.,
   };
+
+  // define kd for each joint
   std::array<float, 29> kds = {
       .1, .1,
       1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5,
@@ -91,6 +91,7 @@ int main(int argc, char const *argv[]) {
       7.5, 7.5, 3., 5.5, 0.5, 0.5,
   };
 
+  // target pos with standing position
   std::array<float, 29> target_pos = { 0.00,  0.00,
                                       0.25, -1.40,  0.00, -0.50, 0.0, 0.0, 0.0,
                                       0.25,  1.40,  0.00,  0.50, 0.0, 0.0, 0.0,
@@ -115,6 +116,7 @@ int main(int argc, char const *argv[]) {
   float period = 50000.f;
   int num_time_steps = static_cast<int>(period / control_dt);
 
+  // init joints with standing position
   std::array<float, 29> current_jpos_des{
                                           0.00,  0.00,
                                           0.25, -1.40,  0.00, -0.50, 0.0, 0.0, 0.0,
