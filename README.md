@@ -51,6 +51,11 @@ make
 sudo make install
 ```
 
+if pybind11-stubgen cannot be found even after pip install, export PATH
+```bash
+export PATH=/home/[user name]/.local/bin:$PATH
+```
+
 ## License
 
 This project is licensed under the Apache License, Version 2.0. See the LICENSE file for details.
