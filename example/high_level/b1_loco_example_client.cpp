@@ -4,7 +4,7 @@
 #include <iostream>
 #include <thread>
 
-void RockHand(booster::robot::b1::B1LocoClient &client) {
+void HandRock(booster::robot::b1::B1LocoClient &client) {
     std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
@@ -61,7 +61,7 @@ void RockHand(booster::robot::b1::B1LocoClient &client) {
     }
 }
 
-void ScissorHand(booster::robot::b1::B1LocoClient &client) {
+void HandScissor(booster::robot::b1::B1LocoClient &client) {
     std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
@@ -111,7 +111,7 @@ void ScissorHand(booster::robot::b1::B1LocoClient &client) {
     }
 }
 
-void PaperHand(booster::robot::b1::B1LocoClient &client) {
+void HandPaper(booster::robot::b1::B1LocoClient &client) {
     std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
@@ -161,7 +161,7 @@ void PaperHand(booster::robot::b1::B1LocoClient &client) {
     }
 }
 
-void GraspHand(booster::robot::b1::B1LocoClient &client) {
+void HandGrasp(booster::robot::b1::B1LocoClient &client) {
     std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
@@ -371,11 +371,11 @@ int main(int argc, char const *argv[]) {
                 // 实现一个随机数生成器，从0~2中随机生成一个数
                 int random = rand() % 3;
                 if (random == 0) {
-                    RockHand(client);
+                    HandRock(client);
                 } else if (random == 1) {
-                    ScissorHand(client);
+                    HandScissor(client);
                 } else {
-                    PaperHand(client);
+                    HandPaper(client);
                 }
 
             } else if (input == "1") {
@@ -388,9 +388,9 @@ int main(int argc, char const *argv[]) {
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
-                PaperHand(client);
+                HandPaper(client);
             } else if (input == "grasp") {
-                GraspHand(client);
+                HandGrasp(client);
             }
 
             if (need_print) {
