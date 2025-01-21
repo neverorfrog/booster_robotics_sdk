@@ -142,6 +142,16 @@ int main(int argc, char const *argv[]) {
         res = client.SwitchHandEndEffectorControlMode(true);
       } else if (input == "hcm-stop") {
         res = client.SwitchHandEndEffectorControlMode(false);
+      } else if (input == "d-hand") {
+          std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
+          booster::robot::b1::DexterousFingerParameter finger_param;
+          finger_param.seq_ = 0;
+          finger_param.angle_ = 500;
+          finger_param.force_ = 50;
+          finger_param.speed_ = 200;
+          finger_params.push_back(finger_param);
+
+          res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kLeftHand);
       }
 
       if (need_print) {

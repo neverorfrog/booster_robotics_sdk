@@ -211,6 +211,20 @@ public:
         return SendApiRequest(LocoApiId::kSwitchHandEndEffectorControlMode, param);
     }
 
+    /**
+     * @brief Control dexterous hand
+     *
+     * @param finger_params finger parameters, include position, force, speed, see `DexterousFingerParameter`
+     * @param hand_index hand index, options are: kLeftHand, kRightHand
+     *
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t ControlDexterousHand(const std::vector<DexterousFingerParameter> &finger_params, HandIndex hand_index) {
+        ControlDexterousHandParameter control_dexterous_hand(finger_params, hand_index);
+        std::string param = control_dexterous_hand.ToJson().dump();
+        return SendApiRequest(LocoApiId::kControlDexterousHand, param);
+    }
+
 private:
     std::shared_ptr<RpcClient> rpc_client_;
 };

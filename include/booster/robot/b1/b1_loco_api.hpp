@@ -29,7 +29,8 @@ enum class LocoApiId {
     kMoveHandEndEffector = 2009,
     kControlGripper = 2010,
     kGetFrameTransform = 2011,
-    kSwitchHandEndEffectorControlMode = 2012
+    kSwitchHandEndEffectorControlMode = 2012,
+    kControlDexterousHand = 2013
 };
 
 class RotateHeadParameter {
@@ -347,6 +348,85 @@ public:
 public:
     bool switch_on_;
 };
+
+/**
+ * This class definition represents a dexterous finger parameter. Different dexterous hands
+ * have different motion parameters.
+ * 
+ * The following parameters all represent a scaling factor. When using them, you
+ * need to convert them into the corresponding coefficients based on the specifications
+ * of the dexterous hand you are using.
+ * 
+ * For the Inspire Dexterous Hand:
+ * - Maximum angle: 90 degrees, Therefore, an angle value of (0 ~ 1000) corresponds to (0 ~ 90 degrees)
+ * - Maximum force: 2kg, Therefore, a force value of (0 ~ 1000) corresponds to (0 ~ 2 kg)
+ * - Maximum speed: 1000, Therefore, a speed value of (0 ~ 1000) corresponds to (0 ~ 1000)
+ * 
+ * angle: represents the finger's angle value, ranging from 0 to 1000
+ */
+class DexterousFingerParameter {
+public:
+    DexterousFingerParameter() = default;
+    DexterousFingerParameter(const int32_t seq, const int32_t angle, 
+                             const int32_t force, const int32_t speed) :
+        seq_(seq), angle_(angle),
+        force_(force), speed_(speed) {
+    }
+
+    void FromJson(nlohmann::json &json) {
+        seq_ = json["seq"];
+        angle_ = json["angle"];
+        force_ = json["force"];
+        speed_ = json["speed"];
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["seq"] = seq_;
+        json["angle"] = angle_;
+        json["force"] = force_;
+        json["speed"] = speed_;
+        return json;
+    }
+
+public:
+    int32_t seq_ = -1;
+    int32_t angle_ = 0;
+    int32_t force_ = 0;
+    int32_t speed_ = 0;
+};
+
+class ControlDexterousHandParameter {
+public:
+    ControlDexterousHandParameter() = default;
+    ControlDexterousHandParameter(
+        const std::vector<DexterousFingerParameter> &finger_params, HandIndex hand_index) :
+        finger_params_(finger_params), hand_index_(hand_index) {
+    }
+
+    void FromJson(nlohmann::json &json) {
+        for (auto &finger_param : json["finger_params"]) {
+            DexterousFingerParameter param;
+            param.FromJson(finger_param);
+            finger_params_.push_back(param);
+        }
+        hand_index_ = static_cast<HandIndex>(json["hand_index"]);
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        for (auto &finger_param : finger_params_) {
+            json["finger_params"].push_back(finger_param.ToJson());
+        }
+        json["hand_index"] = static_cast<int>(hand_index_);
+        return json;
+    }
+
+public:
+    std::vector<DexterousFingerParameter> finger_params_;
+    HandIndex hand_index_;
+};
+
 
 }
 }
