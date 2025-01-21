@@ -9,35 +9,35 @@ void HandRock(booster::robot::b1::B1LocoClient &client) {
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
     finger0_param.angle_ = 0;
-    finger0_param.force_ = 50;
+    finger0_param.force_ = 200;
     finger0_param.speed_ = 500;
     finger_params.push_back(finger0_param);
 
     booster::robot::b1::DexterousFingerParameter finger1_param;
     finger1_param.seq_ = 1;
     finger1_param.angle_ = 0;
-    finger1_param.force_ = 50;
+    finger1_param.force_ = 200;
     finger1_param.speed_ = 500;
     finger_params.push_back(finger1_param);
 
     booster::robot::b1::DexterousFingerParameter finger2_param;
     finger2_param.seq_ = 2;
     finger2_param.angle_ = 0;
-    finger2_param.force_ = 50;
+    finger2_param.force_ = 200;
     finger2_param.speed_ = 500;
     finger_params.push_back(finger2_param);
 
     booster::robot::b1::DexterousFingerParameter finger3_param;
     finger3_param.seq_ = 3;
     finger3_param.angle_ = 0;
-    finger3_param.force_ = 50;
+    finger3_param.force_ = 200;
     finger3_param.speed_ = 500;
     finger_params.push_back(finger3_param);
 
     booster::robot::b1::DexterousFingerParameter finger4_param;
     finger4_param.seq_ = 4;
     finger4_param.angle_ = 0;
-    finger4_param.force_ = 50;
+    finger4_param.force_ = 200;
     finger4_param.speed_ = 500;
     finger_params.push_back(finger4_param);
 
@@ -51,7 +51,7 @@ void HandRock(booster::robot::b1::B1LocoClient &client) {
     booster::robot::b1::DexterousFingerParameter finger5_param;
     finger5_param.seq_ = 5;
     finger5_param.angle_ = 0;
-    finger5_param.force_ = 50;
+    finger5_param.force_ = 200;
     finger5_param.speed_ = 500;
     finger_params.push_back(finger5_param);
 
@@ -66,42 +66,42 @@ void HandScissor(booster::robot::b1::B1LocoClient &client) {
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
     finger0_param.angle_ = 0;
-    finger0_param.force_ = 50;
+    finger0_param.force_ = 200;
     finger0_param.speed_ = 500;
     finger_params.push_back(finger0_param);
 
     booster::robot::b1::DexterousFingerParameter finger1_param;
     finger1_param.seq_ = 1;
     finger1_param.angle_ = 0;
-    finger1_param.force_ = 50;
+    finger1_param.force_ = 200;
     finger1_param.speed_ = 500;
     finger_params.push_back(finger1_param);
 
     booster::robot::b1::DexterousFingerParameter finger2_param;
     finger2_param.seq_ = 2;
     finger2_param.angle_ = 1000;
-    finger2_param.force_ = 50;
+    finger2_param.force_ = 200;
     finger2_param.speed_ = 500;
     finger_params.push_back(finger2_param);
 
     booster::robot::b1::DexterousFingerParameter finger3_param;
     finger3_param.seq_ = 3;
     finger3_param.angle_ = 1000;
-    finger3_param.force_ = 50;
+    finger3_param.force_ = 200;
     finger3_param.speed_ = 500;
     finger_params.push_back(finger3_param);
 
     booster::robot::b1::DexterousFingerParameter finger4_param;
     finger4_param.seq_ = 4;
     finger4_param.angle_ = 0;
-    finger4_param.force_ = 50;
+    finger4_param.force_ = 200;
     finger4_param.speed_ = 500;
     finger_params.push_back(finger4_param);
 
     booster::robot::b1::DexterousFingerParameter finger5_param;
     finger5_param.seq_ = 5;
     finger5_param.angle_ = 0;
-    finger5_param.force_ = 50;
+    finger5_param.force_ = 200;
     finger5_param.speed_ = 500;
     finger_params.push_back(finger5_param);
 
@@ -116,42 +116,42 @@ void HandPaper(booster::robot::b1::B1LocoClient &client) {
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
     finger0_param.angle_ = 1000;
-    finger0_param.force_ = 50;
+    finger0_param.force_ = 200;
     finger0_param.speed_ = 500;
     finger_params.push_back(finger0_param);
 
     booster::robot::b1::DexterousFingerParameter finger1_param;
     finger1_param.seq_ = 1;
     finger1_param.angle_ = 1000;
-    finger1_param.force_ = 50;
+    finger1_param.force_ = 200;
     finger1_param.speed_ = 500;
     finger_params.push_back(finger1_param);
 
     booster::robot::b1::DexterousFingerParameter finger2_param;
     finger2_param.seq_ = 2;
     finger2_param.angle_ = 1000;
-    finger2_param.force_ = 50;
+    finger2_param.force_ = 200;
     finger2_param.speed_ = 500;
     finger_params.push_back(finger2_param);
 
     booster::robot::b1::DexterousFingerParameter finger3_param;
     finger3_param.seq_ = 3;
     finger3_param.angle_ = 1000;
-    finger3_param.force_ = 50;
+    finger3_param.force_ = 200;
     finger3_param.speed_ = 500;
     finger_params.push_back(finger3_param);
 
     booster::robot::b1::DexterousFingerParameter finger4_param;
     finger4_param.seq_ = 4;
     finger4_param.angle_ = 1000;
-    finger4_param.force_ = 50;
+    finger4_param.force_ = 200;
     finger4_param.speed_ = 500;
     finger_params.push_back(finger4_param);
 
     booster::robot::b1::DexterousFingerParameter finger5_param;
     finger5_param.seq_ = 5;
     finger5_param.angle_ = 1000;
-    finger5_param.force_ = 50;
+    finger5_param.force_ = 200;
     finger5_param.speed_ = 500;
     finger_params.push_back(finger5_param);
 
@@ -165,49 +165,99 @@ void HandGrasp(booster::robot::b1::B1LocoClient &client) {
     std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
     booster::robot::b1::DexterousFingerParameter finger0_param;
     finger0_param.seq_ = 0;
-    finger0_param.angle_ = 300;
-    finger0_param.force_ = 50;
+    finger0_param.angle_ = 350;
+    finger0_param.force_ = 400;
     finger0_param.speed_ = 500;
     finger_params.push_back(finger0_param);
 
     booster::robot::b1::DexterousFingerParameter finger1_param;
     finger1_param.seq_ = 1;
-    finger1_param.angle_ = 300;
-    finger1_param.force_ = 50;
+    finger1_param.angle_ = 350;
+    finger1_param.force_ = 400;
     finger1_param.speed_ = 500;
     finger_params.push_back(finger1_param);
 
     booster::robot::b1::DexterousFingerParameter finger2_param;
     finger2_param.seq_ = 2;
-    finger2_param.angle_ = 300;
-    finger2_param.force_ = 50;
+    finger2_param.angle_ = 350;
+    finger2_param.force_ = 400;
     finger2_param.speed_ = 500;
     finger_params.push_back(finger2_param);
 
     booster::robot::b1::DexterousFingerParameter finger3_param;
     finger3_param.seq_ = 3;
-    finger3_param.angle_ = 300;
-    finger3_param.force_ = 50;
+    finger3_param.angle_ = 350;
+    finger3_param.force_ = 2000;
     finger3_param.speed_ = 500;
     finger_params.push_back(finger3_param);
 
     booster::robot::b1::DexterousFingerParameter finger4_param;
     finger4_param.seq_ = 4;
-    finger4_param.angle_ = 300;
-    finger4_param.force_ = 50;
+    finger4_param.angle_ = 350;
+    finger4_param.force_ = 400;
     finger4_param.speed_ = 500;
     finger_params.push_back(finger4_param);
 
     booster::robot::b1::DexterousFingerParameter finger5_param;
     finger5_param.seq_ = 5;
-    finger5_param.angle_ = 300;
-    finger5_param.force_ = 50;
+    finger5_param.angle_ = 350;
+    finger5_param.force_ = 400;
     finger5_param.speed_ = 500;
     finger_params.push_back(finger5_param);
 
     int res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
     if (res != 0) {
         std::cout << "Rock hand failed: error = " << res << std::endl;
+    }
+}
+
+void HandOk(booster::robot::b1::B1LocoClient &client) {
+    std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
+    booster::robot::b1::DexterousFingerParameter finger0_param;
+    finger0_param.seq_ = 0;
+    finger0_param.angle_ = 1000;
+    finger0_param.force_ = 200;
+    finger0_param.speed_ = 500;
+    finger_params.push_back(finger0_param);
+
+    booster::robot::b1::DexterousFingerParameter finger1_param;
+    finger1_param.seq_ = 1;
+    finger1_param.angle_ = 1000;
+    finger1_param.force_ = 200;
+    finger1_param.speed_ = 500;
+    finger_params.push_back(finger1_param);
+
+    booster::robot::b1::DexterousFingerParameter finger2_param;
+    finger2_param.seq_ = 2;
+    finger2_param.angle_ = 1000;
+    finger2_param.force_ = 200;
+    finger2_param.speed_ = 500;
+    finger_params.push_back(finger2_param);
+
+    booster::robot::b1::DexterousFingerParameter finger3_param;
+    finger3_param.seq_ = 3;
+    finger3_param.angle_ = 500;
+    finger3_param.force_ = 200;
+    finger3_param.speed_ = 500;
+    finger_params.push_back(finger3_param);
+
+    booster::robot::b1::DexterousFingerParameter finger4_param;
+    finger4_param.seq_ = 4;
+    finger4_param.angle_ = 400;
+    finger4_param.force_ = 200;
+    finger4_param.speed_ = 500;
+    finger_params.push_back(finger4_param);
+
+    booster::robot::b1::DexterousFingerParameter finger5_param;
+    finger5_param.seq_ = 5;
+    finger5_param.angle_ = 80;
+    finger5_param.force_ = 200;
+    finger5_param.speed_ = 800;
+    finger_params.push_back(finger5_param);
+
+    int res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
+    if (res != 0) {
+        std::cout << "Rock hand thumb failed: error = " << res << std::endl;
     }
 }
 
@@ -354,18 +404,18 @@ int main(int argc, char const *argv[]) {
                 booster::robot::b1::DexterousFingerParameter finger_param;
                 finger_param.seq_ = 0;
                 finger_param.angle_ = 500;
-                finger_param.force_ = 50;
+                finger_param.force_ = 200;
                 finger_param.speed_ = 200;
                 finger_params.push_back(finger_param);
 
                 res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
             } else if (input == "0") {
                 booster::robot::Posture tar_posture;
-                tar_posture.position_ = booster::robot::Position(0.35, 0.25, 0.1);
+                tar_posture.position_ = booster::robot::Position(0.28, -0.25, 0.05);
                 tar_posture.orientation_ = booster::robot::Orientation(0., 0., 0.);
 
                 res = client.MoveHandEndEffector(
-                    tar_posture, 2000, booster::robot::b1::HandIndex::kRightHand);
+                    tar_posture, 1000, booster::robot::b1::HandIndex::kRightHand);
                 std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
                 // 实现一个随机数生成器，从0~2中随机生成一个数
@@ -380,17 +430,29 @@ int main(int argc, char const *argv[]) {
 
             } else if (input == "1") {
                 booster::robot::Posture tar_posture;
-                tar_posture.position_ = booster::robot::Position(0.25, 0.25, 0.25);
-                tar_posture.orientation_ = booster::robot::Orientation(0., -0.4, 0.);
+                tar_posture.position_ = booster::robot::Position(0.25, -0.3, 0.25);
+                tar_posture.orientation_ = booster::robot::Orientation(0., -1.0, 0.);
 
                 res = client.MoveHandEndEffector(
-                    tar_posture, 2000, booster::robot::b1::HandIndex::kRightHand);
+                    tar_posture, 1000, booster::robot::b1::HandIndex::kRightHand);
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
                 HandPaper(client);
             } else if (input == "grasp") {
+                // for (int i = 0; i < 30; i++) {
+                //     HandGrasp(client);
+                //     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                // }
                 HandGrasp(client);
+            } else if (input == "ok") {
+                HandOk(client);
+            } else if (input == "paper") {
+                HandPaper(client);
+            } else if (input == "scissor") {
+                HandScissor(client);
+            } else if (input == "rock") {
+                HandRock(client);
             }
 
             if (need_print) {
