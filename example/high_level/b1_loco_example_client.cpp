@@ -107,7 +107,7 @@ void HandScissor(booster::robot::b1::B1LocoClient &client) {
 
     int res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
     if (res != 0) {
-        std::cout << "Rock hand failed: error = " << res << std::endl;
+        std::cout << "Scissor hand failed: error = " << res << std::endl;
     }
 }
 
@@ -157,7 +157,7 @@ void HandPaper(booster::robot::b1::B1LocoClient &client) {
 
     int res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
     if (res != 0) {
-        std::cout << "Rock hand failed: error = " << res << std::endl;
+        std::cout << "Paper hand failed: error = " << res << std::endl;
     }
 }
 
@@ -187,7 +187,7 @@ void HandGrasp(booster::robot::b1::B1LocoClient &client) {
     booster::robot::b1::DexterousFingerParameter finger3_param;
     finger3_param.seq_ = 3;
     finger3_param.angle_ = 350;
-    finger3_param.force_ = 2000;
+    finger3_param.force_ = 400;
     finger3_param.speed_ = 800;
     finger_params.push_back(finger3_param);
 
@@ -207,7 +207,7 @@ void HandGrasp(booster::robot::b1::B1LocoClient &client) {
 
     int res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
     if (res != 0) {
-        std::cout << "Rock hand failed: error = " << res << std::endl;
+        std::cout << "Grasp hand failed: error = " << res << std::endl;
     }
 }
 
@@ -257,7 +257,7 @@ void HandOk(booster::robot::b1::B1LocoClient &client) {
 
     int res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
     if (res != 0) {
-        std::cout << "Rock hand thumb failed: error = " << res << std::endl;
+        std::cout << "Ok hand failed: error = " << res << std::endl;
     }
 }
 
@@ -273,7 +273,7 @@ int main(int argc, char const *argv[]) {
     float x, y, z, yaw, pitch;
     int32_t res = 0;
     std::string input;
-    int32_t hand_count = 0;
+    int32_t hand_action_count = 0;
     while (true) {
         bool need_print = false;
         std::getline(std::cin, input);
@@ -400,7 +400,7 @@ int main(int argc, char const *argv[]) {
                 res = client.SwitchHandEndEffectorControlMode(true);
             } else if (input == "hcm-stop") {
                 res = client.SwitchHandEndEffectorControlMode(false);
-            } else if (input == "hand-up") {
+            } else if (input == "hand-down") {
                 booster::robot::Posture tar_posture;
                 tar_posture.position_ = booster::robot::Position(0.28, -0.25, 0.05);
                 tar_posture.orientation_ = booster::robot::Orientation(0., 0., 0.);
@@ -409,7 +409,7 @@ int main(int argc, char const *argv[]) {
                     tar_posture, 1000, booster::robot::b1::HandIndex::kRightHand);
                 std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
-                hand_count++;
+                hand_action_count++;
                 int random = rand() % 3;
                 if (random == 0) {
                     HandRock(client);
@@ -419,7 +419,7 @@ int main(int argc, char const *argv[]) {
                     HandPaper(client);
                 }
 
-            } else if (input == "hand-down") {
+            } else if (input == "hand-up") {
                 booster::robot::Posture tar_posture;
                 tar_posture.position_ = booster::robot::Position(0.25, -0.3, 0.25);
                 tar_posture.orientation_ = booster::robot::Orientation(0., -1.0, 0.);

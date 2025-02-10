@@ -251,6 +251,15 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
         .def_readwrite("force", &robot::b1::GripperMotionParameter::force_)              // 暴露 force_ 字段
         .def_readwrite("speed", &robot::b1::GripperMotionParameter::speed_);
 
+    py::class_<robot::b1::DexterousFingerParameter>(m, "DexterousFingerParameter")
+        .def(py::init<>())
+        .def(py::init<int32_t, int32_t, int32_t, int32_t>(),
+             py::arg("seq"), py::arg("angle"), py::arg("force"), py::arg("speed"))
+        .def_readwrite("seq", &robot::b1::DexterousFingerParameter::seq_)
+        .def_readwrite("angle", &robot::b1::DexterousFingerParameter::angle_)
+        .def_readwrite("force", &robot::b1::DexterousFingerParameter::force_)
+        .def_readwrite("speed", &robot::b1::DexterousFingerParameter::speed_);
+
     py::class_<robot::b1::B1LocoClient>(m, "B1LocoClient")
         .def(py::init<>())
         .def("Init", py::overload_cast<>(&robot::b1::B1LocoClient::Init), "Init")
@@ -366,6 +375,17 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                  * 
                  * @param switch_on true to switch on, false to switch off
                  * 
+                 * @return 0 if success, otherwise return error code
+                 */
+                )pbdoc")
+        .def("ControlDexterousHand", &robot::b1::B1LocoClient::ControlDexterousHand, py::arg("finger_params"), py::arg("hand_index"),
+             R"pbdoc(
+                /**
+                 * @brief Control dexterous hand
+                 *
+                 * @param finger_params finger parameters, include position, force, speed, see `DexterousFingerParameter`
+                 * @param hand_index hand index, options are: kLeftHand, kRightHand
+                 *
                  * @return 0 if success, otherwise return error code
                  */
                 )pbdoc");
