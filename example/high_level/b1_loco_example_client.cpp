@@ -273,6 +273,7 @@ int main(int argc, char const *argv[]) {
     float x, y, z, yaw, pitch;
     int32_t res = 0;
     std::string input;
+    int32_t hand_count = 0;
     while (true) {
         bool need_print = false;
         std::getline(std::cin, input);
@@ -399,17 +400,7 @@ int main(int argc, char const *argv[]) {
                 res = client.SwitchHandEndEffectorControlMode(true);
             } else if (input == "hcm-stop") {
                 res = client.SwitchHandEndEffectorControlMode(false);
-            } else if (input == "d-hand") {
-                std::vector<booster::robot::b1::DexterousFingerParameter> finger_params;
-                booster::robot::b1::DexterousFingerParameter finger_param;
-                finger_param.seq_ = 0;
-                finger_param.angle_ = 500;
-                finger_param.force_ = 200;
-                finger_param.speed_ = 200;
-                finger_params.push_back(finger_param);
-
-                res = client.ControlDexterousHand(finger_params, booster::robot::b1::HandIndex::kRightHand);
-            } else if (input == "0") {
+            } else if (input == "hand-up") {
                 booster::robot::Posture tar_posture;
                 tar_posture.position_ = booster::robot::Position(0.28, -0.25, 0.05);
                 tar_posture.orientation_ = booster::robot::Orientation(0., 0., 0.);
@@ -418,7 +409,7 @@ int main(int argc, char const *argv[]) {
                     tar_posture, 1000, booster::robot::b1::HandIndex::kRightHand);
                 std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
-                // 实现一个随机数生成器，从0~2中随机生成一个数
+                hand_count++;
                 int random = rand() % 3;
                 if (random == 0) {
                     HandRock(client);
@@ -428,7 +419,7 @@ int main(int argc, char const *argv[]) {
                     HandPaper(client);
                 }
 
-            } else if (input == "1") {
+            } else if (input == "hand-down") {
                 booster::robot::Posture tar_posture;
                 tar_posture.position_ = booster::robot::Position(0.25, -0.3, 0.25);
                 tar_posture.orientation_ = booster::robot::Orientation(0., -1.0, 0.);
@@ -440,10 +431,6 @@ int main(int argc, char const *argv[]) {
 
                 HandPaper(client);
             } else if (input == "grasp") {
-                // for (int i = 0; i < 30; i++) {
-                //     HandGrasp(client);
-                //     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-                // }
                 HandGrasp(client);
             } else if (input == "ok") {
                 HandOk(client);
