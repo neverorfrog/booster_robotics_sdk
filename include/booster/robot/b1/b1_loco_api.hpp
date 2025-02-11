@@ -382,15 +382,15 @@ public:
  * For the Inspire RH56 Dexterous Hand:
  * - seq: 0~5, represents the sequence of the fingers, as follows:
  * -- 0.Little finger, 1.Ring finger, 2.Middle finger, 3.Index finger, 4.Thumb bending, 5.Thumb rotation
- * - angle: 0~2000, 0 represents the fully closed state, 2000 represents the
+ * - angle: 0~1000, 0 represents the fully closed state, 1000 represents the
  * fully open state. Different fingers have different ranges.
- * -- The range 0~2000 of the thumb rotation corresponds to 90-165°
- * -- The range 0~2000 of the thumb bending corresponds to -130~53.6°
- * -- The range 0~2000 of the other fingers corresponds to 19°-176.7°
+ * -- The range 0~1000 of the thumb rotation corresponds to 90-165°
+ * -- The range 0~1000 of the thumb bending corresponds to -130~53.6°
+ * -- The range 0~1000 of the other fingers corresponds to 19°-176.7°
  * - force: represents the finger's force value, Different fingers have
  * different ranges.
  * -- The range 0~1500 of the thumb rotation and bending corresponds to 0~1.5kg
- * -- he range 0~1000 of the other fingers corresponds to 0~1kg
+ * -- The range 0~1000 of the other fingers corresponds to 0~1kg
  * - speed: 0~1000, Speed unit: Not specified, The Inspire RH56 dexterous hand
  * does not provide a unit, range, or dimension for speed. The speed can only be
  * adjusted using values from 0 to 1000, which do not correspond to an absolute
