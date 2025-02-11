@@ -212,6 +212,19 @@ public:
     }
 
     /**
+     * @brief Handshake
+     * 
+     * @param action whether to start handshake action, options are: kHandOpen, kHandClose
+     *  
+     */
+    int32_t Handshake(HandAction action) {
+        HandshakeParameter handshake(action);
+        std::string param = handshake.ToJson().dump();
+        return SendApiRequest(LocoApiId::kHandshake, param);
+    }
+
+
+    /**
      * @brief Control dexterous hand
      *
      * @param finger_params finger parameters, include position, force, speed, see `DexterousFingerParameter`
