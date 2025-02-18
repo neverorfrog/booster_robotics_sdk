@@ -308,12 +308,33 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                  * @return 0 if success, otherwise return error code
                  */
             )pbdoc")
+        .def("RotateHeadWithDirection", &robot::b1::B1LocoClient::RotateHeadWithDirection, py::arg("pitch_direction"), py::arg("yaw_direction"),
+             R"pbdoc(
+                 /**
+                 * @brief Robot rotates its head with direction
+                 *
+                 * @param pitch_direction pitch direction, unit: rad
+                 * @param yaw_direction yaw direction, unit: rad
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
         .def("WaveHand", &robot::b1::B1LocoClient::WaveHand, py::arg("action"),
              R"pbdoc(
                  /**
                  * @brief Robot waves hand
                  *
                  * @param action hand action, options are: kHandOpen, kHandClose
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
+        .def("Handshake", &robot::b1::B1LocoClient::Handshake, py::arg("action"),
+             R"pbdoc(
+                 /**
+                 * @brief Handshake
+                 *
+                 * @param action whether to start handshake action, options are: kHandOpen, kHandClose
                  *
                  * @return 0 if success, otherwise return error code
                  */
@@ -385,6 +406,22 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                  *
                  * @param finger_params finger parameters, include position, force, speed, see `DexterousFingerParameter`
                  * @param hand_index hand index, options are: kLeftHand, kRightHand
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+                )pbdoc")
+        .def("GetUp", &robot::b1::B1LocoClient::GetUp,
+             R"pbdoc(
+                /**
+                 * @brief Stand up
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+                )pbdoc")
+        .def("LieDown", &robot::b1::B1LocoClient::LieDown,
+             R"pbdoc(
+                /**
+                 * @brief Lie down
                  *
                  * @return 0 if success, otherwise return error code
                  */
