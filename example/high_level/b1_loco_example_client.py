@@ -1,5 +1,261 @@
-from booster_robotics_sdk_python import B1LocoClient, ChannelFactory, RobotMode, B1HandIndex, GripperControlMode, Position, Orientation, Posture, GripperMotionParameter, Quaternion, Frame, Transform
-import sys
+from booster_robotics_sdk_python import B1LocoClient, ChannelFactory, RobotMode, B1HandIndex, GripperControlMode, Position, Orientation, Posture, GripperMotionParameter, Quaternion, Frame, Transform, DexterousFingerParameter
+import sys, time, random
+
+def hand_rock(client: B1LocoClient):
+    # 定义一个 名为 finger_params 的数组，用于存储每个手指的参数
+    finger_params = []
+    # 设置每个手指的参数
+    finger0_param = DexterousFingerParameter()
+    finger0_param.seq = 0
+    finger0_param.angle = 0
+    finger0_param.force = 200
+    finger0_param.speed = 800
+    finger_params.append(finger0_param)
+
+    finger1_param = DexterousFingerParameter()
+    finger1_param.seq = 1
+    finger1_param.angle = 0
+    finger1_param.force = 200
+    finger1_param.speed = 800
+    finger_params.append(finger1_param)
+
+    finger2_param = DexterousFingerParameter()
+    finger2_param.seq = 2
+    finger2_param.angle = 0
+    finger2_param.force = 200
+    finger2_param.speed = 800
+    finger_params.append(finger2_param)
+
+    finger3_param = DexterousFingerParameter()
+    finger3_param.seq = 3
+    finger3_param.angle = 0
+    finger3_param.force = 200
+    finger3_param.speed = 800
+    finger_params.append(finger3_param)
+
+    finger4_param = DexterousFingerParameter()
+    finger4_param.seq = 3
+    finger4_param.angle = 0
+    finger4_param.force = 200
+    finger4_param.speed = 800
+    finger_params.append(finger4_param)
+
+    res = client.ControlDexterousHand(finger_params, B1HandIndex.kRightHand)
+    if res != 0:
+        print(f"Rock hand failed: error = {res}")
+
+    time.sleep(0.2)
+
+    finger5_param = DexterousFingerParameter()
+    finger5_param.seq = 5
+    finger5_param.angle = 0
+    finger5_param.force = 200
+    finger5_param.speed = 800
+    finger_params.append(finger5_param)
+
+    res = client.ControlDexterousHand(finger_params, B1HandIndex.kRightHand)
+    if res != 0:
+        print(f"Rock hand thumb failed: error = {res}")
+
+def hand_scissor(client: B1LocoClient):
+    # 定义一个 名为 finger_params 的数组，用于存储每个手指的参数
+    finger_params = []
+    # 设置每个手指的参数
+    finger0_param = DexterousFingerParameter()
+    finger0_param.seq = 0
+    finger0_param.angle = 0
+    finger0_param.force = 200
+    finger0_param.speed = 800
+    finger_params.append(finger0_param)
+
+    finger1_param = DexterousFingerParameter()
+    finger1_param.seq = 1
+    finger1_param.angle = 0
+    finger1_param.force = 200
+    finger1_param.speed = 800
+    finger_params.append(finger1_param)
+
+    finger2_param = DexterousFingerParameter()
+    finger2_param.seq = 2
+    finger2_param.angle = 1000
+    finger2_param.force = 200
+    finger2_param.speed = 800
+    finger_params.append(finger2_param)
+
+    finger3_param = DexterousFingerParameter()
+    finger3_param.seq = 3
+    finger3_param.angle = 1000
+    finger3_param.force = 200
+    finger3_param.speed = 800
+    finger_params.append(finger3_param)
+
+    finger4_param = DexterousFingerParameter()
+    finger4_param.seq = 3
+    finger4_param.angle = 0
+    finger4_param.force = 200
+    finger4_param.speed = 800
+    finger_params.append(finger4_param)
+
+    finger5_param = DexterousFingerParameter()
+    finger5_param.seq = 5
+    finger5_param.angle = 0
+    finger5_param.force = 200
+    finger5_param.speed = 800
+    finger_params.append(finger5_param)
+
+    res = client.ControlDexterousHand(finger_params, B1HandIndex.kRightHand)
+    if res != 0:
+        print(f"Scissor hand failed: error = {res}")
+
+def hand_paper(client: B1LocoClient):
+    # 定义一个 名为 finger_params 的数组，用于存储每个手指的参数
+    finger_params = []
+    # 设置每个手指的参数
+    finger0_param = DexterousFingerParameter()
+    finger0_param.seq = 0
+    finger0_param.angle = 1000
+    finger0_param.force = 200
+    finger0_param.speed = 800
+    finger_params.append(finger0_param)
+
+    finger1_param = DexterousFingerParameter()
+    finger1_param.seq = 1
+    finger1_param.angle = 1000
+    finger1_param.force = 200
+    finger1_param.speed = 800
+    finger_params.append(finger1_param)
+
+    finger2_param = DexterousFingerParameter()
+    finger2_param.seq = 2
+    finger2_param.angle = 1000
+    finger2_param.force = 200
+    finger2_param.speed = 800
+    finger_params.append(finger2_param)
+
+    finger3_param = DexterousFingerParameter()
+    finger3_param.seq = 3
+    finger3_param.angle = 1000
+    finger3_param.force = 200
+    finger3_param.speed = 800
+    finger_params.append(finger3_param)
+
+    finger4_param = DexterousFingerParameter()
+    finger4_param.seq = 3
+    finger4_param.angle = 1000
+    finger4_param.force = 200
+    finger4_param.speed = 800
+    finger_params.append(finger4_param)
+
+    finger5_param = DexterousFingerParameter()
+    finger5_param.seq = 5
+    finger5_param.angle = 1000
+    finger5_param.force = 200
+    finger5_param.speed = 800
+    finger_params.append(finger5_param)
+
+    res = client.ControlDexterousHand(finger_params, B1HandIndex.kRightHand)
+    if res != 0:
+        print(f"Paper hand failed: error = {res}")
+
+def hand_grasp(client: B1LocoClient):
+    # 定义一个 名为 finger_params 的数组，用于存储每个手指的参数
+    finger_params = []
+    # 设置每个手指的参数
+    finger0_param = DexterousFingerParameter()
+    finger0_param.seq = 0
+    finger0_param.angle = 350
+    finger0_param.force = 400
+    finger0_param.speed = 800
+    finger_params.append(finger0_param)
+
+    finger1_param = DexterousFingerParameter()
+    finger1_param.seq = 1
+    finger1_param.angle = 350
+    finger1_param.force = 400
+    finger1_param.speed = 800
+    finger_params.append(finger1_param)
+
+    finger2_param = DexterousFingerParameter()
+    finger2_param.seq = 2
+    finger2_param.angle = 350
+    finger2_param.force = 400
+    finger2_param.speed = 800
+    finger_params.append(finger2_param)
+
+    finger3_param = DexterousFingerParameter()
+    finger3_param.seq = 3
+    finger3_param.angle = 350
+    finger3_param.force = 400
+    finger3_param.speed = 800
+    finger_params.append(finger3_param)
+
+    finger4_param = DexterousFingerParameter()
+    finger4_param.seq = 3
+    finger4_param.angle = 350
+    finger4_param.force = 400
+    finger4_param.speed = 800
+    finger_params.append(finger4_param)
+
+    finger5_param = DexterousFingerParameter()
+    finger5_param.seq = 5
+    finger5_param.angle = 350
+    finger5_param.force = 400
+    finger5_param.speed = 800
+    finger_params.append(finger5_param)
+
+    res = client.ControlDexterousHand(finger_params, B1HandIndex.kRightHand)
+    if res != 0:
+        print(f"Grasp hand failed: error = {res}")
+
+def hand_ok(client: B1LocoClient):
+    # 定义一个 名为 finger_params 的数组，用于存储每个手指的参数
+    finger_params = []
+    # 设置每个手指的参数
+    finger0_param = DexterousFingerParameter()
+    finger0_param.seq = 0
+    finger0_param.angle = 1000
+    finger0_param.force = 200
+    finger0_param.speed = 800
+    finger_params.append(finger0_param)
+
+    finger1_param = DexterousFingerParameter()
+    finger1_param.seq = 1
+    finger1_param.angle = 1000
+    finger1_param.force = 200
+    finger1_param.speed = 800
+    finger_params.append(finger1_param)
+
+    finger2_param = DexterousFingerParameter()
+    finger2_param.seq = 2
+    finger2_param.angle = 1000
+    finger2_param.force = 200
+    finger2_param.speed = 800
+    finger_params.append(finger2_param)
+
+    finger3_param = DexterousFingerParameter()
+    finger3_param.seq = 3
+    finger3_param.angle = 500
+    finger3_param.force = 200
+    finger3_param.speed = 800
+    finger_params.append(finger3_param)
+
+    finger4_param = DexterousFingerParameter()
+    finger4_param.seq = 3
+    finger4_param.angle = 400
+    finger4_param.force = 200
+    finger4_param.speed = 800
+    finger_params.append(finger4_param)
+
+    finger5_param = DexterousFingerParameter()
+    finger5_param.seq = 5
+    finger5_param.angle = 350
+    finger5_param.force = 200
+    finger5_param.speed = 1000
+    finger_params.append(finger5_param)
+
+    res = client.ControlDexterousHand(finger_params, B1HandIndex.kRightHand)
+    if res != 0:
+        print(f"Ok hand failed: error = {res}")
 
 def main():
     if len(sys.argv) < 2:
@@ -12,6 +268,7 @@ def main():
     client.Init()
     x, y, z, yaw, pitch = 0.0, 0.0, 0.0, 0.0, 0.0
     res = 0
+    hand_action_count = 0
 
     while True:
         need_print = False
@@ -96,6 +353,38 @@ def main():
                 res = client.SwitchHandEndEffectorControlMode(True)
             elif input_cmd == "hcm-stop":
                 res = client.SwitchHandEndEffectorControlMode(False)
+            elif input_cmd == "hand-down":
+                tar_posture = Posture()
+                tar_posture.position = Position(0.28, -0.25, 0.05)
+                tar_posture.orientation = Orientation(0.0, 0.0, 0.0)
+                res = client.MoveHandEndEffector(tar_posture, 1000, B1HandIndex.kRightHand)
+                time.sleep(0.3)
+                hand_action_count += 1
+                r_num = random.randint(0, 2)
+                if r_num == 0:
+                    hand_rock(client)
+                elif r_num == 1:
+                    hand_scissor(client)
+                else:
+                    hand_paper(client)
+            
+            elif input_cmd == "hand-up":
+                tar_posture = Posture()
+                tar_posture.position = Position(0.25, -0.3, 0.25)
+                tar_posture.orientation = Orientation(0.0, -1.0, 0.0)
+                res = client.MoveHandEndEffector(tar_posture, 1000, B1HandIndex.kRightHand)
+                time.sleep(0.3)
+                hand_paper(client)
+            elif input_cmd == "grasp":
+                hand_grasp(client)
+            elif input_cmd == "ok":
+                hand_ok(client)
+            elif input_cmd == "paper":
+                hand_paper(client)
+            elif input_cmd == "scissor":
+                hand_scissor(client)
+            elif input_cmd == "rock":
+                hand_rock(client)
 
             if need_print:
                 print(f"Param: {x} {y} {z}")

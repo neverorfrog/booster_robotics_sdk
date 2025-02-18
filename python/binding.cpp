@@ -251,6 +251,15 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
         .def_readwrite("force", &robot::b1::GripperMotionParameter::force_)              // 暴露 force_ 字段
         .def_readwrite("speed", &robot::b1::GripperMotionParameter::speed_);
 
+    py::class_<robot::b1::DexterousFingerParameter>(m, "DexterousFingerParameter")
+        .def(py::init<>())
+        .def(py::init<int32_t, int32_t, int32_t, int32_t>(),
+             py::arg("seq"), py::arg("angle"), py::arg("force"), py::arg("speed"))
+        .def_readwrite("seq", &robot::b1::DexterousFingerParameter::seq_)
+        .def_readwrite("angle", &robot::b1::DexterousFingerParameter::angle_)
+        .def_readwrite("force", &robot::b1::DexterousFingerParameter::force_)
+        .def_readwrite("speed", &robot::b1::DexterousFingerParameter::speed_);
+
     py::class_<robot::b1::B1LocoClient>(m, "B1LocoClient")
         .def(py::init<>())
         .def("Init", py::overload_cast<>(&robot::b1::B1LocoClient::Init), "Init")
@@ -299,12 +308,33 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                  * @return 0 if success, otherwise return error code
                  */
             )pbdoc")
+        .def("RotateHeadWithDirection", &robot::b1::B1LocoClient::RotateHeadWithDirection, py::arg("pitch_direction"), py::arg("yaw_direction"),
+             R"pbdoc(
+                 /**
+                 * @brief Robot rotates its head with direction
+                 *
+                 * @param pitch_direction pitch direction, unit: rad
+                 * @param yaw_direction yaw direction, unit: rad
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
         .def("WaveHand", &robot::b1::B1LocoClient::WaveHand, py::arg("action"),
              R"pbdoc(
                  /**
                  * @brief Robot waves hand
                  *
                  * @param action hand action, options are: kHandOpen, kHandClose
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+            )pbdoc")
+        .def("Handshake", &robot::b1::B1LocoClient::Handshake, py::arg("action"),
+             R"pbdoc(
+                 /**
+                 * @brief Handshake
+                 *
+                 * @param action whether to start handshake action, options are: kHandOpen, kHandClose
                  *
                  * @return 0 if success, otherwise return error code
                  */
@@ -366,6 +396,33 @@ PYBIND11_MODULE(booster_robotics_sdk_python, m) {
                  * 
                  * @param switch_on true to switch on, false to switch off
                  * 
+                 * @return 0 if success, otherwise return error code
+                 */
+                )pbdoc")
+        .def("ControlDexterousHand", &robot::b1::B1LocoClient::ControlDexterousHand, py::arg("finger_params"), py::arg("hand_index"),
+             R"pbdoc(
+                /**
+                 * @brief Control dexterous hand
+                 *
+                 * @param finger_params finger parameters, include position, force, speed, see `DexterousFingerParameter`
+                 * @param hand_index hand index, options are: kLeftHand, kRightHand
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+                )pbdoc")
+        .def("GetUp", &robot::b1::B1LocoClient::GetUp,
+             R"pbdoc(
+                /**
+                 * @brief Stand up
+                 *
+                 * @return 0 if success, otherwise return error code
+                 */
+                )pbdoc")
+        .def("LieDown", &robot::b1::B1LocoClient::LieDown,
+             R"pbdoc(
+                /**
+                 * @brief Lie down
+                 *
                  * @return 0 if success, otherwise return error code
                  */
                 )pbdoc");

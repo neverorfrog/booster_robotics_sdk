@@ -29,7 +29,9 @@ enum class LocoApiId {
     kMoveHandEndEffector = 2009,
     kControlGripper = 2010,
     kGetFrameTransform = 2011,
-    kSwitchHandEndEffectorControlMode = 2012
+    kSwitchHandEndEffectorControlMode = 2012,
+    kControlDexterousHand = 2013,
+    kHandshake = 2015
 };
 
 class RotateHeadParameter {
@@ -161,6 +163,28 @@ public:
     HandAction hand_action_;
 };
 
+class HandshakeParameter {
+public:
+    HandshakeParameter() = default;
+    HandshakeParameter(HandAction hand_action) :
+        hand_action_(hand_action) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        hand_action_ = static_cast<HandAction>(json["hand_action"]);
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["hand_action"] = static_cast<int>(hand_action_);
+        return json;
+    }
+
+public:
+    HandAction hand_action_;
+};
+
 class MoveHandEndEffectorParameter {
 public:
     MoveHandEndEffectorParameter() = default;
@@ -237,8 +261,8 @@ enum class GripperControlMode {
  *  For the Inspire EG2-4C2 Gripper:
  *  - Maximum position: 77mm, Therefore, a position value of (0 ~ 1000) corresponds to (0 ~ 77 mm)
  *  - Maximum force: 2kg, Therefore, a force value of (0 ~ 1000) corresponds to (0 ~ 2 kg)
- *  - Speed unit: Not specified, The Inspire EG2-4C2 Gripper does not provide a unit, range, 
- *    or dimension for speed. The speed can only be adjusted using values from 0 to 1000, which 
+ *  - Speed unit: Not specified, The Inspire EG2-4C2 Gripper does not provide a unit, range,
+ *    or dimension for speed. The speed can only be adjusted using values from 0 to 1000, which
  *    do not correspond to an absolute value
  *
  *  position: represents the gripper's opening value, ranging from 0 to 1000
@@ -323,7 +347,6 @@ public:
 public:
     Frame src_;
     Frame dst_;
-
 };
 
 class SwitchHandEndEffectorControlModeParameter {
@@ -346,6 +369,103 @@ public:
 
 public:
     bool switch_on_;
+};
+
+/**
+ * This class definition represents a dexterous finger parameter. Different
+ * dexterous hands have different motion parameters.
+ *
+ * The following parameters all represent a scaling factor. When using them, you
+ * need to convert them into the corresponding coefficients based on the
+ * specifications of the dexterous hand you are using.
+ *
+ * For the Inspire RH56 Dexterous Hand:
+ * - seq: 0~5, represents the sequence of the fingers, as follows:
+ * -- 0.Little finger, 1.Ring finger, 2.Middle finger, 3.Index finger, 4.Thumb bending, 5.Thumb rotation
+ * - angle: 0~1000, 0 represents the fully closed state, 1000 represents the
+ * fully open state. Different fingers have different ranges.
+ * -- The range 0~1000 of the thumb rotation corresponds to 90-165°
+ * -- The range 0~1000 of the thumb bending corresponds to -130~53.6°
+ * -- The range 0~1000 of the other fingers corresponds to 19°-176.7°
+ * - force: represents the finger's force value, Different fingers have
+ * different ranges.
+ * -- The range 0~1500 of the thumb rotation and bending corresponds to 0~1.5kg
+ * -- The range 0~1000 of the other fingers corresponds to 0~1kg
+ * - speed: 0~1000, Speed unit: Not specified, The Inspire RH56 dexterous hand
+ * does not provide a unit, range, or dimension for speed. The speed can only be
+ * adjusted using values from 0 to 1000, which do not correspond to an absolute
+ * value
+ *
+ */
+class DexterousFingerParameter {
+public:
+    DexterousFingerParameter() = default;
+    DexterousFingerParameter(const int32_t seq, const int32_t angle,
+                             const int32_t force, const int32_t speed) :
+        seq_(seq),
+        angle_(angle),
+        force_(force), speed_(speed) {
+    }
+
+    void FromJson(nlohmann::json &json) {
+        seq_ = json["seq"];
+        angle_ = json["angle"];
+        force_ = json["force"];
+        speed_ = json["speed"];
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["seq"] = seq_;
+        json["angle"] = angle_;
+        json["force"] = force_;
+        json["speed"] = speed_;
+        return json;
+    }
+
+public:
+    int32_t seq_ = -1;
+    int32_t angle_ = 0;
+    int32_t force_ = 0;
+    int32_t speed_ = 0;
+};
+
+/**
+ * This class definition represents a dexterous hand parameter.
+ * finger_params: represents the parameters of each finger, It is a vector of `DexterousFingerParameter`
+ * hand_index: represents the hand index, which can be `kLeftHand` or `kRightHand`
+ *
+ */
+class ControlDexterousHandParameter {
+public:
+    ControlDexterousHandParameter() = default;
+    ControlDexterousHandParameter(
+        const std::vector<DexterousFingerParameter> &finger_params, HandIndex hand_index) :
+        finger_params_(finger_params),
+        hand_index_(hand_index) {
+    }
+
+    void FromJson(nlohmann::json &json) {
+        for (auto &finger_param : json["finger_params"]) {
+            DexterousFingerParameter param;
+            param.FromJson(finger_param);
+            finger_params_.push_back(param);
+        }
+        hand_index_ = static_cast<HandIndex>(json["hand_index"]);
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        for (auto &finger_param : finger_params_) {
+            json["finger_params"].push_back(finger_param.ToJson());
+        }
+        json["hand_index"] = static_cast<int>(hand_index_);
+        return json;
+    }
+
+public:
+    std::vector<DexterousFingerParameter> finger_params_;
+    HandIndex hand_index_;
 };
 
 }
