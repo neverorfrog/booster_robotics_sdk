@@ -10,6 +10,10 @@
 #include <booster/robot/channel/channel_publisher.hpp>
 
 
+// Before you start to run this example, please make sure the robot is in "Prepare" mode.
+// Then start to run this example and press ENTER to start control.
+// In the same time, you should change the robot mode to "Custom" by api or controller.
+
 static const std::string kTopicLowSDK = booster::robot::b1::kTopicJointCtrl;
 using namespace booster::robot::b1;
 
