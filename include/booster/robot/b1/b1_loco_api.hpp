@@ -31,7 +31,9 @@ enum class LocoApiId {
     kGetFrameTransform = 2011,
     kSwitchHandEndEffectorControlMode = 2012,
     kControlDexterousHand = 2013,
-    kHandshake = 2015
+    kHandshake = 2015,
+    kDance = 2016,
+    kGetMode = 2017,
 };
 
 class RotateHeadParameter {
@@ -66,6 +68,25 @@ public:
     ChangeModeParameter(booster::robot::RobotMode mode) :
         mode_(mode) {
     }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        mode_ = static_cast<booster::robot::RobotMode>(json["mode"]);
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["mode"] = static_cast<int>(mode_);
+        return json;
+    }
+
+public:
+    booster::robot::RobotMode mode_;
+};
+
+class GetModeResponse {
+public:
+    GetModeResponse() = default;
 
 public:
     void FromJson(nlohmann::json &json) {
@@ -208,6 +229,17 @@ public:
         hand_index_(hand_index) {
         has_aux_ = true;
     }
+    MoveHandEndEffectorParameter(
+        const Posture &target_posture,
+        int time_millis,
+        HandIndex hand_index,
+        bool new_version) :
+        target_posture_(target_posture),
+        time_millis_(time_millis),
+        hand_index_(hand_index),
+        new_version_(new_version) {
+        has_aux_ = false;
+    }
 
 public:
     void FromJson(nlohmann::json &json) {
@@ -218,6 +250,7 @@ public:
         }
         time_millis_ = json["time_millis"];
         hand_index_ = static_cast<HandIndex>(json["hand_index"]);
+        new_version_ = json["new_version"];
     }
 
     nlohmann::json ToJson() const {
@@ -229,6 +262,7 @@ public:
         json["time_millis"] = time_millis_;
         json["hand_index"] = static_cast<int>(hand_index_);
         json["has_aux"] = has_aux_;
+        json["new_version"] = new_version_;
         return json;
     }
 
@@ -238,6 +272,7 @@ public:
     int time_millis_ = 1000;
     HandIndex hand_index_;
     bool has_aux_ = false;
+    bool new_version_ = false;
 };
 
 enum class GripperControlMode {
@@ -468,6 +503,38 @@ public:
     HandIndex hand_index_;
 };
 
+enum class DanceId {
+    kNewYear = 0,       // 拜年舞蹈
+    kNezha = 1,         // 哪吒舞
+    kTowardsFuture = 2, // 时代少年团《一起向未来》
+    kStop = 1000,
+};
+
+/**
+ * This class definition represents a dance parameter.
+ * dance_id: represents the dance ID, which can be found in the `DanceId` enum
+ */
+class DanceParameter {
+public:
+    DanceParameter() = default;
+    DanceParameter(DanceId dance_id) :
+        dance_id_(dance_id) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        dance_id_ = json["dance_id"];
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["dance_id"] = dance_id_;
+        return json;
+    }
+
+public:
+    DanceId dance_id_;
+};
 }
 }
 } // namespace booster::robot::b1

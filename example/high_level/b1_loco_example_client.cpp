@@ -370,10 +370,15 @@ int main(int argc, char const *argv[]) {
             } else if (input == "mhel") {
                 booster::robot::Posture tar_posture;
                 tar_posture.position_ = booster::robot::Position(0.35, 0.25, 0.1);
-                tar_posture.orientation_ = booster::robot::Orientation(0., 0., 0.);
+                tar_posture.orientation_ = booster::robot::Orientation(-1.57, -1.57, 0.);
 
-                res = client.MoveHandEndEffector(
+                res = client.MoveHandEndEffectorV2(
                     tar_posture, 2000, booster::robot::b1::HandIndex::kLeftHand);
+
+                tar_posture.position_ = booster::robot::Position(0.35, -0.2, 0.1);
+                tar_posture.orientation_ = booster::robot::Orientation(1.57, -1.57, 0.);
+                res = client.MoveHandEndEffectorV2(
+                    tar_posture, 2000, booster::robot::b1::HandIndex::kRightHand);
             } else if (input == "gopenl") {
                 booster::robot::b1::GripperMotionParameter motion_param;
                 motion_param.position_ = 500;
@@ -418,7 +423,6 @@ int main(int argc, char const *argv[]) {
                 } else {
                     HandPaper(client);
                 }
-
             } else if (input == "hand-up") {
                 booster::robot::Posture tar_posture;
                 tar_posture.position_ = booster::robot::Position(0.25, -0.3, 0.25);
