@@ -1,0 +1,20 @@
+# [dependencies]
+# python = "3.12.*"
+# # spqrbooster = { path = "." }
+# # circus = {path = "tools/circus"}
+# # spqrpython = {path = "tools/spqrpython"}
+
+[package]
+name = "booster_robotics_sdk"
+version = "0.1.0"
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "0.3.*" }
+
+[package.build-dependencies]
+cmake = "4.1.*"
+
+[package.host-dependencies]
+ros-jazzy-fastrtps = ">=2.14.4,<3"
+ros-jazzy-fastcdr = ">=2.2.5,<3"
+foonathan-memory = ">=0.7.3,<0.8"
