@@ -1,41 +1,37 @@
-# ============================= PROJECT SETUP =================================================
+# ============================= PROJECT SETUP ==============
 cmake_policy(SET CMP0048 NEW)
 cmake_minimum_required(VERSION 3.22)
 project(booster_robotics_sdk VERSION 0.1 LANGUAGES CXX)
 set(LIBRARY ${PROJECT_NAME})
-set(PROJECT booster_robotics_sdk)
-
-# Provide standard install directory variables like CMAKE_INSTALL_LIBDIR
-include(GNUInstallDirs)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
-# =============================================================================================
-
-# ============================ BUILD OPTIONS ==================================================
-option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_PYTHON_BINDING "Build python bindings" OFF)
-option(GENERATE_CLANGD "Generate .clangd in project root" ON)
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_compile_definitions("DEBUG")
-endif()
-
-message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
-# =============================================================================================
+file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/.clangd"
+  "CompileFlags:\n  CompilationDatabase: ${CMAKE_CURRENT_BINARY_DIR}\n")
+# ======================================================
 
 
-# ============================= Dependencies ==================================================
-find_package(fastrtps REQUIRED)
-find_package(fastcdr REQUIRED)
-find_package(foonathan_memory REQUIRED)
-# =============================================================================================
+# ========== Dependencies ============================
+set(DEPENDENCIES
+  ament_cmake
+  fastdds
+  fastcdr
+  foonathan_memory
+)
 
-# ============================ LIBRARY ==================================================
+foreach(PACKAGE ${DEPENDENCIES})
+    find_package(${PACKAGE} REQUIRED)
+    if(NOT ${PACKAGE}_FOUND)
+        message(FATAL_ERROR "Package ${PACKAGE} not found!")
+    else()
+        message(STATUS "Found package: ${PACKAGE}")
+    endif()
+endforeach()
+# =======================================================
+
+# ============================ LIBRARY ==================
+include(GNUInstallDirs)
 file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)
 
 # Pick correct prebuilt archive for this host
@@ -66,7 +62,7 @@ target_include_directories(${LIBRARY}
 target_link_libraries(${LIBRARY}
   INTERFACE
     ${LIBRARY}_prebuilt
-    fastrtps
+    fastdds
     fastcdr
     foonathan_memory
 )
@@ -81,8 +77,21 @@ install(TARGETS ${LIBRARY}
     EXPORT ${LIBRARY}Targets
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+# ==============================================
 
-# ==============================================================================================
+# ========== AMENT PACKAGE =========================
+install(DIRECTORY include/ DESTINATION include/)
+# install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/launch)
+# install(DIRECTORY config/ DESTINATION share/${PROJECT_NAME}/config)
+
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
+ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
+ament_export_dependencies(${DEPENDENCIES})
+
+ament_package()
+# ==================================================
+
 
 # TODO: Add executables in framework, not here
 # add_executable(b1_loco_example_client example/high_level/b1_loco_example_client.cpp)
