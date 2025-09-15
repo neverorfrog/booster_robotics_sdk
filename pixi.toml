@@ -1,14 +1,10 @@
-[package]
-name = "booster_robotics_sdk"
-version = "0.1.0"
+[package.build.backend]
+channels = [
+  "https://prefix.dev/pixi-build-backends",
+  "https://prefix.dev/conda-forge",
+]
+name = "pixi-build-ros"
+version = "*"
 
-[package.build]
-backend = { name = "pixi-build-cmake", version = "0.3.*" }
-
-[package.build-dependencies]
-cmake = "4.1.*"
-
-[package.host-dependencies]
-ros-kilted-fastdds = ">=3.2.2,<4"
-foonathan-memory = ">=0.7.3,<0.8"
-catkin_pkg = ">=1.1.0,<2"
+[package.build.config]
+distro = "kilted"
