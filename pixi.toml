@@ -8,7 +8,7 @@ booster_robotics_sdk = {path = "."}
 
 [package]
 name = "booster_robotics_sdk"
-version = "0.1.0"
+version = "1.4"
 
 [package.build]
 backend = { name = "pixi-build-cmake", version = "0.3.*" }
@@ -16,7 +16,6 @@ backend = { name = "pixi-build-cmake", version = "0.3.*" }
 [package.build-dependencies]
 cmake = "4.1.*"
 sysroot_linux-64 = ">=2.28"
-nanobind = "2.4.*"
 
 [package.host-dependencies]
 ros-jazzy-fastrtps = ">=2.14.4,<3"
@@ -24,15 +23,10 @@ ros-jazzy-fastcdr = ">=2.2.5,<3"
 foonathan-memory = ">=0.7.3,<0.8"
 nanobind = "2.4.*"
 python = "3.12.*"
-gxx_linux-64 = ">=15,<16"
-sysroot_linux-64 = ">=2.28"
 
 [package.run-dependencies]
 # Ensure the runtime provides the newer libstdc++/libgcc ABI the prebuilt
 # static archive was built against. These are required at runtime/link time.
-nanobind = "2.4.*"
 ros-jazzy-fastrtps = ">=2.14.4,<3"
 ros-jazzy-fastcdr = ">=2.2.5,<3"
-libstdcxx-ng = ">=15"
-libgcc-ng = ">=15"
 foonathan-memory = ">=0.7.3,<0.8"
