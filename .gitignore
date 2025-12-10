@@ -16,3 +16,5 @@ build/
 install/
 .vscode
 .debug*
+*.conda
+.clangd
