@@ -107,33 +107,81 @@ install(TARGETS ${LIBRARY}
 #  PYTHON BINDINGS (The Pixi-Build-CMake Way)
 # ==============================================================================
 option(BUILD_PYTHON_BINDING "Build python bindings" ON) # Default to ON for this package
-
+set(BINDINGS_SRC "")
+if(EXISTS "${CMAKE_SOURCE_DIR}/python/binding.cpp")
+  set(BINDINGS_SRC "${CMAKE_SOURCE_DIR}/python/binding.cpp")
+endif()
 if(BUILD_PYTHON_BINDING)
-    find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
-    find_package(pybind11 CONFIG REQUIRED)
-
-    # Define the python module target
-    # Note: 'booster_robotic_sdk' matches the import name in Python
-    pybind11_add_module(booster_robotic_sdk python/binding.cpp) 
-
-    # Link against the main C++ library
-    target_link_libraries(booster_robotic_sdk PRIVATE ${LIBRARY})
-
-    # --- CRITICAL: Calculate Installation Path ---
-    # This asks Python where 'site-packages' is relative to the installation prefix
+    # Python (Interpreter + Development.Module)
+    set(_PY_COMPS Interpreter Development.Module)
+    find_package(Python QUIET COMPONENTS ${_PY_COMPS})
+    if(NOT Python_FOUND)
+      find_package(Python3 REQUIRED COMPONENTS ${_PY_COMPS})
+      set(Python_EXECUTABLE ${Python3_EXECUTABLE})
+      set(Python_SITEARCH  ${Python3_SITEARCH})
+    endif()
+    
+    # Locate nanobind's CMake package via the Python module
     execute_process(
-        COMMAND "${Python3_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '.', 'base': '.'}))"
+      COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+      OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE _NB_CMAKE_DIR
+      RESULT_VARIABLE _NB_RET
+    )
+    if(NOT _NB_RET EQUAL 0)
+    message(FATAL_ERROR "Failed to locate nanobind via 'python -m nanobind --cmake_dir'. "
+    "Is 'nanobind' installed in this pixi env?")
+    endif()
+    set(nanobind_DIR "${_NB_CMAKE_DIR}")
+    find_package(nanobind CONFIG REQUIRED)
+
+    # Determine Python's site-packages (platlib)
+    execute_process(
+        COMMAND "${Python_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '.', 'base': '.'}))"
         OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    
-    # Clean up any leading slash if present (e.g. /lib/python...)
     string(REGEX REPLACE "^/" "" PYTHON_SITE_PACKAGES "${PYTHON_SITE_PACKAGES}")
-
     message(STATUS "Python bindings will be installed to: \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}")
 
-    # Install the module (.so/.pyd) to the environment's site-packages
-    install(TARGETS booster_robotic_sdk DESTINATION ${PYTHON_SITE_PACKAGES})
+    # Auto-detect module name from NB_MODULE(...) in Bindings.cpp (e.g., 'circuspy')
+    file(READ "${BINDINGS_SRC}" _NB_SRC)
+    string(REGEX MATCH "NB_MODULE\\s*\\(([A-Za-z_][A-Za-z0-9_]*)" _m "${_NB_SRC}")
+    if(NOT _m)
+      message(FATAL_ERROR "Could not find NB_MODULE(...) in ${BINDINGS_SRC}")
+    endif()
+    set(PY_MODULE_NAME "${CMAKE_MATCH_1}")
+    message(STATUS "nanobind: detected module name '${PY_MODULE_NAME}' from ${BINDINGS_SRC}")
+
+    # Build the nanobind module
+    nanobind_add_module(${PY_MODULE_NAME} ${BINDINGS_SRC})
+    target_link_libraries(${PY_MODULE_NAME} PRIVATE ${LIBRARY})
+
+    # Install Python module into the environment's site-packages
+    install(
+        TARGETS ${PY_MODULE_NAME}
+        LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES}
+    )
+    
+    # Generate stub files (.pyi) automatically after installation
+    # nanobind.stubgen writes directly to the output path as a file, not a directory
+    install(CODE "
+        message(STATUS \"Generating stubs for ${PY_MODULE_NAME}...\")
+        set(ENV{PYTHONPATH} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}:\$ENV{PYTHONPATH}\")
+        execute_process(
+            COMMAND ${Python_EXECUTABLE} -m nanobind.stubgen 
+                -m ${PY_MODULE_NAME}
+                -o \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/${PY_MODULE_NAME}.pyi
+            RESULT_VARIABLE _stubgen_result
+            OUTPUT_VARIABLE _stubgen_output
+            ERROR_VARIABLE _stubgen_error
+        )
+        if(NOT _stubgen_result EQUAL 0)
+            message(WARNING \"Failed to generate stubs for ${PY_MODULE_NAME}: \${_stubgen_error}\")
+        else()
+            message(STATUS \"Successfully generated stubs at \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/${PY_MODULE_NAME}.pyi\")
+        endif()
+    ")
+    
 endif()
 
 # ============================== EXECUTABLES ==============================
