@@ -22,7 +22,8 @@ ros-jazzy-fastrtps = ">=2.14.4,<3"
 ros-jazzy-fastcdr = ">=2.2.5,<3"
 foonathan-memory = ">=0.7.3,<0.8"
 nanobind = "2.4.*"
-python = "3.12.*"
+python = "3.11.*"
+numpy = ">=1.26,<3"
 
 [package.run-dependencies]
 # Ensure the runtime provides the newer libstdc++/libgcc ABI the prebuilt
