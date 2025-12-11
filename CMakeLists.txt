@@ -34,21 +34,26 @@ message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 # =============================================================================================
 
 # ============================= Dependencies ==================================================
-find_package(fastrtps REQUIRED)
-find_package(fastcdr REQUIRED)
-find_package(foonathan_memory REQUIRED)
-find_package(Threads REQUIRED)
+# Pick correct prebuilt archive for this host
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "arm64")
+  set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/aarch64")
+  set(THIRD_PARTY_ARCH "aarch64")
+else()
+  set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/x86_64")
+  set(THIRD_PARTY_ARCH "x86_64")
+endif()
+
+# Set up third_party dependencies path
+set(THIRD_PARTY_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/lib/${THIRD_PARTY_ARCH}")
+set(THIRD_PARTY_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/include")
+
+message(STATUS "Target architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "Using prebuilt libs from: ${PREBUILT_ARCH_DIR}")
+message(STATUS "Using third_party libs from: ${THIRD_PARTY_LIB_DIR}")
 # =============================================================================================
 
 # ============================ LIBRARY ==================================================
 file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)
-
-# Pick correct prebuilt archive for this host
-if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "arm64")
-  set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/aarch64")
-else()
-  set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/x86_64")
-endif()
 
 set(PREBUILT_LIB "${PREBUILT_ARCH_DIR}/libbooster_robotics_sdk.a")
 if(NOT EXISTS "${PREBUILT_LIB}")
@@ -60,6 +65,23 @@ set_target_properties(${LIBRARY}_prebuilt PROPERTIES
   IMPORTED_LOCATION "${PREBUILT_LIB}"
 )
 include_directories(BEFORE ${CMAKE_SOURCE_DIR}/include)
+include_directories(BEFORE ${THIRD_PARTY_INCLUDE_DIR})
+
+# Import third_party prebuilt libraries
+add_library(fastcdr SHARED IMPORTED)
+set_target_properties(fastcdr PROPERTIES
+  IMPORTED_LOCATION "${THIRD_PARTY_LIB_DIR}/libfastcdr.so"
+)
+
+add_library(fastrtps SHARED IMPORTED)
+set_target_properties(fastrtps PROPERTIES
+  IMPORTED_LOCATION "${THIRD_PARTY_LIB_DIR}/libfastrtps.so"
+)
+
+add_library(foonathan_memory STATIC IMPORTED)
+set_target_properties(foonathan_memory PROPERTIES
+  IMPORTED_LOCATION "${THIRD_PARTY_LIB_DIR}/libfoonathan_memory-0.7.3.a"
+)
 
 # Header-only interface target that consumers link against
 add_library(${LIBRARY} INTERFACE)
@@ -75,19 +97,7 @@ target_link_libraries(${LIBRARY}
     fastrtps
     fastcdr
     foonathan_memory
-    Threads::Threads
 )
-
-# Some toolchains/linkers require `-pthread` (not just `-lpthread`) so ensure
-# consumers of the INTERFACE target receive the compile+link flags.
-if(NOT MSVC)
-  target_compile_options(${LIBRARY} INTERFACE -pthread)
-  target_link_options(${LIBRARY} INTERFACE -pthread)
-  
-  # Workaround for prebuilt library built with newer glibc: allow undefined weak symbols
-  # These symbols (__libc_single_threaded, pthread_cond_clockwait) will be resolved at runtime
-  target_link_options(${LIBRARY} INTERFACE "LINKER:--warn-unresolved-symbols")
-endif()
 
 install(FILES "${PREBUILT_LIB}" DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
@@ -155,6 +165,29 @@ if(BUILD_PYTHON_BINDING)
     # Build the nanobind module
     nanobind_add_module(${PY_MODULE_NAME} ${BINDINGS_SRC})
     target_link_libraries(${PY_MODULE_NAME} PRIVATE ${LIBRARY})
+    
+    # Set RPATH to find third_party libraries in the same directory (site-packages)
+    # This allows the module to find libfastrtps.so and libfastcdr.so at runtime
+    set_target_properties(${PY_MODULE_NAME} PROPERTIES
+      BUILD_RPATH "${THIRD_PARTY_LIB_DIR}"
+      INSTALL_RPATH "$ORIGIN"
+      INSTALL_RPATH_USE_LINK_PATH TRUE
+    )
+
+    # Install third_party libraries FIRST so they're available when the module loads
+    install(
+        FILES "${THIRD_PARTY_LIB_DIR}/libfastrtps.so"
+              "${THIRD_PARTY_LIB_DIR}/libfastcdr.so"
+        DESTINATION ${PYTHON_SITE_PACKAGES}
+    )
+    
+    # Create version-specific symlinks matching the SONAME that the prebuilt SDK expects
+    # libfastrtps.so has SONAME libfastrtps.so.2.13
+    # libfastcdr.so has SONAME libfastcdr.so.2
+    install(CODE "
+        execute_process(COMMAND ln -sf libfastrtps.so \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastrtps.so.2.13)
+        execute_process(COMMAND ln -sf libfastcdr.so \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastcdr.so.2)
+    ")
 
     # Install Python module into the environment's site-packages
     install(
@@ -162,11 +195,12 @@ if(BUILD_PYTHON_BINDING)
         LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES}
     )
     
-    # Generate stub files (.pyi) automatically after installation
-    # nanobind.stubgen writes directly to the output path as a file, not a directory
+    # Generate stub files (.pyi) after installation
+    # Set LD_LIBRARY_PATH so stubgen can find the bundled libraries and conda dependencies
     install(CODE "
         message(STATUS \"Generating stubs for ${PY_MODULE_NAME}...\")
         set(ENV{PYTHONPATH} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}:\$ENV{PYTHONPATH}\")
+        set(ENV{LD_LIBRARY_PATH} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}:\${CMAKE_INSTALL_PREFIX}/lib:\$ENV{LD_LIBRARY_PATH}\")
         execute_process(
             COMMAND ${Python_EXECUTABLE} -m nanobind.stubgen 
                 -m ${PY_MODULE_NAME}
