@@ -88,6 +88,7 @@ add_library(${LIBRARY} INTERFACE)
 target_include_directories(${LIBRARY}
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${THIRD_PARTY_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
@@ -100,7 +101,15 @@ target_link_libraries(${LIBRARY}
 )
 
 install(FILES "${PREBUILT_LIB}" DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+install(FILES "${THIRD_PARTY_LIB_DIR}/libfastrtps.so"
+              "${THIRD_PARTY_LIB_DIR}/libfastcdr.so"
+              "${THIRD_PARTY_LIB_DIR}/libfoonathan_memory-0.7.3.a"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}"
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
+install(DIRECTORY "${THIRD_PARTY_INCLUDE_DIR}/"
   DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}"
   FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
@@ -109,6 +118,68 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
 install(TARGETS ${LIBRARY}
     EXPORT ${LIBRARY}Targets
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+    EXPORT ${LIBRARY}Targets
+    FILE ${LIBRARY}Targets.cmake
+    NAMESPACE booster::
+    DESTINATION lib/cmake/${LIBRARY}
+)
+
+include(CMakePackageConfigHelpers)
+
+# Generate a config file that recreates the imported targets
+set(CONFIG_CONTENT "include(CMakeFindDependencyMacro)\n")
+string(APPEND CONFIG_CONTENT "find_dependency(Threads REQUIRED)\n\n")
+string(APPEND CONFIG_CONTENT "# Recreate imported third-party targets\n")
+string(APPEND CONFIG_CONTENT "add_library(fastcdr SHARED IMPORTED)\n")
+string(APPEND CONFIG_CONTENT "set_target_properties(fastcdr PROPERTIES\n")
+string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libfastcdr.so\"\n")
+string(APPEND CONFIG_CONTENT "  INTERFACE_INCLUDE_DIRECTORIES \"\${CMAKE_CURRENT_LIST_DIR}/../../../include\"\n")
+string(APPEND CONFIG_CONTENT ")\n\n")
+
+string(APPEND CONFIG_CONTENT "add_library(fastrtps SHARED IMPORTED)\n")
+string(APPEND CONFIG_CONTENT "set_target_properties(fastrtps PROPERTIES\n")
+string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libfastrtps.so\"\n")
+string(APPEND CONFIG_CONTENT "  INTERFACE_INCLUDE_DIRECTORIES \"\${CMAKE_CURRENT_LIST_DIR}/../../../include\"\n")
+string(APPEND CONFIG_CONTENT ")\n\n")
+
+string(APPEND CONFIG_CONTENT "add_library(foonathan_memory STATIC IMPORTED)\n")
+string(APPEND CONFIG_CONTENT "set_target_properties(foonathan_memory PROPERTIES\n")
+string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libfoonathan_memory-0.7.3.a\"\n")
+string(APPEND CONFIG_CONTENT "  INTERFACE_INCLUDE_DIRECTORIES \"\${CMAKE_CURRENT_LIST_DIR}/../../../include\"\n")
+string(APPEND CONFIG_CONTENT ")\n\n")
+
+string(APPEND CONFIG_CONTENT "# Import prebuilt library\n")
+string(APPEND CONFIG_CONTENT "add_library(${LIBRARY}_prebuilt STATIC IMPORTED)\n")
+string(APPEND CONFIG_CONTENT "set_target_properties(${LIBRARY}_prebuilt PROPERTIES\n")
+string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libbooster_robotics_sdk.a\"\n")
+string(APPEND CONFIG_CONTENT ")\n\n")
+
+string(APPEND CONFIG_CONTENT "# Import glibc compatibility shim\n")
+string(APPEND CONFIG_CONTENT "add_library(glibc_compat STATIC IMPORTED)\n")
+string(APPEND CONFIG_CONTENT "set_target_properties(glibc_compat PROPERTIES\n")
+string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libglibc_compat.a\"\n")
+string(APPEND CONFIG_CONTENT ")\n\n")
+
+string(APPEND CONFIG_CONTENT "include(\"\${CMAKE_CURRENT_LIST_DIR}/${LIBRARY}Targets.cmake\")\n")
+file(
+    WRITE "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY}Config.cmake"
+    "${CONFIG_CONTENT}"
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY}ConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY}Config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY}ConfigVersion.cmake"
+    DESTINATION lib/cmake/${LIBRARY}
 )
 
 # ==============================================================================================
