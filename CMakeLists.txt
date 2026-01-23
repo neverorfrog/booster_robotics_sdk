@@ -76,6 +76,7 @@ set_target_properties(fastcdr PROPERTIES
 add_library(fastrtps SHARED IMPORTED)
 set_target_properties(fastrtps PROPERTIES
   IMPORTED_LOCATION "${THIRD_PARTY_LIB_DIR}/libfastrtps.so"
+  IMPORTED_SONAME "libfastrtps.so.2.13"
 )
 
 add_library(foonathan_memory STATIC IMPORTED)
@@ -105,6 +106,16 @@ install(FILES "${THIRD_PARTY_LIB_DIR}/libfastrtps.so"
               "${THIRD_PARTY_LIB_DIR}/libfastcdr.so"
               "${THIRD_PARTY_LIB_DIR}/libfoonathan_memory-0.7.3.a"
         DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+
+# Create versioned symlinks for shared libraries matching their SONAME
+install(CODE "
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+        libfastrtps.so
+        \${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libfastrtps.so.2.13)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+        libfastcdr.so
+        \${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/libfastcdr.so.2)
+")
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
   DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}"
   FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
@@ -131,8 +142,6 @@ include(CMakePackageConfigHelpers)
 
 # Generate a config file that recreates the imported targets
 set(CONFIG_CONTENT "include(CMakeFindDependencyMacro)\n")
-string(APPEND CONFIG_CONTENT "find_dependency(Threads REQUIRED)\n\n")
-string(APPEND CONFIG_CONTENT "# Recreate imported third-party targets\n")
 string(APPEND CONFIG_CONTENT "add_library(fastcdr SHARED IMPORTED)\n")
 string(APPEND CONFIG_CONTENT "set_target_properties(fastcdr PROPERTIES\n")
 string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libfastcdr.so\"\n")
@@ -155,12 +164,6 @@ string(APPEND CONFIG_CONTENT "# Import prebuilt library\n")
 string(APPEND CONFIG_CONTENT "add_library(${LIBRARY}_prebuilt STATIC IMPORTED)\n")
 string(APPEND CONFIG_CONTENT "set_target_properties(${LIBRARY}_prebuilt PROPERTIES\n")
 string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libbooster_robotics_sdk.a\"\n")
-string(APPEND CONFIG_CONTENT ")\n\n")
-
-string(APPEND CONFIG_CONTENT "# Import glibc compatibility shim\n")
-string(APPEND CONFIG_CONTENT "add_library(glibc_compat STATIC IMPORTED)\n")
-string(APPEND CONFIG_CONTENT "set_target_properties(glibc_compat PROPERTIES\n")
-string(APPEND CONFIG_CONTENT "  IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/../../../lib/libglibc_compat.a\"\n")
 string(APPEND CONFIG_CONTENT ")\n\n")
 
 string(APPEND CONFIG_CONTENT "include(\"\${CMAKE_CURRENT_LIST_DIR}/${LIBRARY}Targets.cmake\")\n")
@@ -251,13 +254,15 @@ if(BUILD_PYTHON_BINDING)
               "${THIRD_PARTY_LIB_DIR}/libfastcdr.so"
         DESTINATION ${PYTHON_SITE_PACKAGES}
     )
-    
-    # Create version-specific symlinks matching the SONAME that the prebuilt SDK expects
-    # libfastrtps.so has SONAME libfastrtps.so.2.13
-    # libfastcdr.so has SONAME libfastcdr.so.2
+
+    # Create version-specific symlinks matching the SONAME
     install(CODE "
-        execute_process(COMMAND ln -sf libfastrtps.so \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastrtps.so.2.13)
-        execute_process(COMMAND ln -sf libfastcdr.so \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastcdr.so.2)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+            libfastrtps.so
+            \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastrtps.so.2.13)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+            libfastcdr.so
+            \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastcdr.so.2)
     ")
 
     # Install Python module into the environment's site-packages
