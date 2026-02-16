@@ -8,6 +8,14 @@ package:
 
 source:
   - path: .
+    filter:
+      exclude:
+        - .git/**
+        - .github/**
+        - build/**
+        - output/**
+        - example/**
+        - third_party/include/fastdds/statistics/**
 
 build:
   number: 0
