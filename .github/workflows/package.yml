@@ -29,7 +29,8 @@ jobs:
         uses: prefix-dev/rattler-build-action@v0.2.34
         with:
           recipe-path: recipe.yaml
-          build-args: --skip-existing=all --target-platform ${{ matrix.target-platform }} -v
+          build-args: --skip-existing=all --no-build-id --target-platform ${{ matrix.target-platform }} -v
+          artifact-name: package-${{ matrix.target-platform }}
       - name: Upload to prefix.dev
         run: |
           for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \)); do
