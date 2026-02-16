@@ -1,6 +1,6 @@
 context:
   name: booster_robotics_sdk
-  version: "1.4.2"
+  version: "1.4.3"
 
 package:
   name: ${{ name }}
