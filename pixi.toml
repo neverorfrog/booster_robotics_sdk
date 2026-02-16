@@ -9,7 +9,7 @@ typing_extensions = ">=4.14.1,<5"
 
 [package]
 name = "booster_robotics_sdk"
-version = "1.4"
+version = "1.4.1"
 
 [package.build]
 backend = { name = "pixi-build-cmake", version = "0.3.*" }

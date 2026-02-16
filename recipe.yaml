@@ -1,0 +1,67 @@
+context:
+  name: booster_robotics_sdk
+  version: "1.4.1"
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  - path: .
+
+build:
+  number: 0
+  script:
+    - mkdir build
+    - cd build
+    - if: unix
+      then:
+        - cmake ${CMAKE_ARGS} -GNinja ..
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX=$PREFIX
+          -DBUILD_PYTHON_BINDING=OFF
+      else:
+        - cmake %CMAKE_ARGS% -GNinja ..
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX%
+          -DBUILD_PYTHON_BINDING=OFF
+    - cmake --build . --config Release
+    - cmake --install . --config Release
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - cmake >=3.22
+    - ninja
+    - patchelf >=0.17.2
+  host:
+    - tinyxml2 ==9
+  run:
+    - tinyxml2 ==9
+
+tests:
+  - script:
+    - if: unix
+      then:
+        - test -f $PREFIX/lib/libbooster_robotics_sdk.a
+        - test -f $PREFIX/lib/libfastrtps.so
+        - test -f $PREFIX/lib/libfastcdr.so
+        - test -d $PREFIX/include/booster
+        - test -d $PREFIX/include/booster/robot
+      else:
+        - if not exist %LIBRARY_LIB%\\booster_robotics_sdk.lib exit 1
+        - if not exist %LIBRARY_INC%\\booster\\robot exit 1
+
+about:
+  homepage: https://github.com/neverorfrog/booster_robotics_sdk
+  repository: https://github.com/neverorfrog/booster_robotics_sdk
+  license: MIT
+  summary: Booster Robotics SDK
+  description: |
+    SDK for Booster Robotics platform providing communication
+    and control interfaces for robot hardware.
+
+extra:
+  recipe-maintainers:
+    - neverorfrog
