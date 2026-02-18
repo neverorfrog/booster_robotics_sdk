@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 /*!
  * @file Pose.h
  * This header file contains the declaration of the described types in the IDL
