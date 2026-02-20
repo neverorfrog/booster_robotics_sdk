@@ -109,7 +109,7 @@ packages:
   timestamp: 1770939656741
 - conda: .
   name: booster_robotics_sdk
-  version: 1.4.5
+  version: 1.4.1
   build: hb0f4dca_0
   subdir: linux-64
   depends:
@@ -120,11 +120,11 @@ packages:
   - python_abi 3.11.* *_cp311
   - numpy >=1.23,<3
   input:
-    hash: c1dad4cbb26ba2103c1dbbad7f145e1513fa56c07b62608303632938e12314cd
+    hash: d551f4f5e03050b89b03911bb6bd50eb5b48833f52a69d74e02e3801a1b7bb62
     globs: []
 - conda: .
   name: booster_robotics_sdk
-  version: 1.4.5
+  version: 1.4.1
   build: he8cfe8b_0
   subdir: linux-aarch64
   depends:
@@ -135,7 +135,7 @@ packages:
   - python_abi 3.11.* *_cp311
   - numpy >=1.23,<3
   input:
-    hash: c1dad4cbb26ba2103c1dbbad7f145e1513fa56c07b62608303632938e12314cd
+    hash: d551f4f5e03050b89b03911bb6bd50eb5b48833f52a69d74e02e3801a1b7bb62
     globs: []
 - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hda65f42_9.conda
   sha256: 0b75d45f0bba3e95dc693336fa51f40ea28c980131fec438afb7ce6118ed05f6
