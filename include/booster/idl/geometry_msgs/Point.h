@@ -49,6 +49,8 @@
 
 // ------------------------------ Pub Sub Type End ----------------------------
 
+
+
 #if defined(_WIN32)
 #if defined(EPROSIMA_USER_DLL_EXPORT)
 #define eProsima_user_DllExport __declspec(dllexport)
@@ -81,7 +83,6 @@ class CdrSizeCalculator;
 }  // namespace eprosima
 
 namespace geometry_msgs {
-
 namespace msg {
 
 /*!
@@ -260,10 +261,10 @@ class Point : public eprosima::fastdds::dds::TopicDataType {
 
   MD5 m_md5;
   unsigned char* m_keyBuffer;
+
 };
 
 }  // namespace msg
-
 }  // namespace geometry_msgs
 
 #endif  // _FAST_DDS_GENERATED_GEOMETRY_MSGS_MSG_POINT_H_

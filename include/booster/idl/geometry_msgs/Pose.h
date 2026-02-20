@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 /*!
  * @file Pose.h
  * This header file contains the declaration of the described types in the IDL
@@ -50,6 +49,7 @@
 
 // ------------------------------ Pub Sub Type End ----------------------------
 
+
 #include "Point.h"
 #include "Quaternion.h"
 
@@ -85,7 +85,6 @@ class CdrSizeCalculator;
 }  // namespace eprosima
 
 namespace geometry_msgs {
-
 namespace msg {
 
 /*!
@@ -167,15 +166,13 @@ class Pose : public eprosima::fastdds::dds::TopicDataType {
    * @brief This function moves the value in member orientation
    * @param _orientation New value to be moved in member orientation
    */
-  eProsima_user_DllExport void orientation(
-      geometry_msgs::msg::Quaternion&& _orientation);
+  eProsima_user_DllExport void orientation(geometry_msgs::msg::Quaternion&& _orientation);
 
   /*!
    * @brief This function returns a constant reference to member orientation
    * @return Constant reference to member orientation
    */
-  eProsima_user_DllExport const geometry_msgs::msg::Quaternion& orientation()
-      const;
+  eProsima_user_DllExport const geometry_msgs::msg::Quaternion& orientation() const;
 
   /*!
    * @brief This function returns a reference to member orientation
@@ -261,10 +258,10 @@ class Pose : public eprosima::fastdds::dds::TopicDataType {
 
   MD5 m_md5;
   unsigned char* m_keyBuffer;
+
 };
 
 }  // namespace msg
-
 }  // namespace geometry_msgs
 
 #endif  // _FAST_DDS_GENERATED_GEOMETRY_MSGS_MSG_POSE_H_
