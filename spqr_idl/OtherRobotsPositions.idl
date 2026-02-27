@@ -1,0 +1,7 @@
+module spqr_msgs {
+  module msg {
+    struct OtherRobotsPositions {
+        int32 position;
+    };
+  };
+};
