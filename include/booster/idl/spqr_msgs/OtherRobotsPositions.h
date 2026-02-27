@@ -132,22 +132,22 @@ class OtherRobotsPositions : public eprosima::fastdds::dds::TopicDataType {
    * @brief This function sets a value in member position
    * @param _position New value for member position
    */
-  eProsima_user_DllExport void position(int32 _position);
+  eProsima_user_DllExport void position(int32_t _position);
 
   /*!
    * @brief This function returns the value of member position
    * @return Value of member position
    */
-  eProsima_user_DllExport int32 position() const;
+  eProsima_user_DllExport int32_t position() const;
 
   /*!
    * @brief This function returns a reference to member position
    * @return Reference to member position
    */
-  eProsima_user_DllExport int32& position();
+  eProsima_user_DllExport int32_t& position();
 
  private:
-  int32 m_position;
+  int32_t m_position;
 
  public:
   typedef OtherRobotsPositions type;
