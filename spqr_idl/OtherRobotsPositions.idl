@@ -1,4 +1,4 @@
-module spqr_msgs {
+module builtin_interfaces {
   module msg {
     struct OtherRobotsPositions {
         int32 position;
