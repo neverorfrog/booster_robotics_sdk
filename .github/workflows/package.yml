@@ -1,0 +1,39 @@
+name: Package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and upload package
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target-platform: linux-64
+          - os: ubuntu-22.04-arm
+            target-platform: linux-aarch64
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build conda package
+        uses: prefix-dev/rattler-build-action@v0.2.34
+        with:
+          recipe-path: recipe.yaml
+          build-args: --skip-existing=all --no-build-id --target-platform ${{ matrix.target-platform }} -v
+          artifact-name: package-${{ matrix.target-platform }}
+      - name: Upload to prefix.dev
+        run: |
+          for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \)); do
+            echo "Uploading ${pkg}"
+            rattler-build upload prefix -c spqr "${pkg}"
+          done

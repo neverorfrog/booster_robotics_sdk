@@ -1,0 +1,32 @@
+[workspace]
+channels = ["conda-forge", "robostack-humble"]
+platforms = ["linux-64", "linux-aarch64"]
+preview = ["pixi-build"]
+
+[dependencies]
+booster_robotics_sdk = {path = "."}
+typing_extensions = ">=4.14.1,<5"
+
+[package]
+name = "booster_robotics_sdk"
+version = "1.4.1"
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "0.3.*" }
+
+[package.build.config]
+extra-args = ["-DBUILD_PYTHON_BINDING=OFF"]
+
+[package.build-dependencies]
+cmake = "4.1.*"
+patchelf = ">=0.17.2,<0.18"
+
+[package.host-dependencies]
+nanobind = "2.4.*"
+python = ">=3.9,<=3.11"
+numpy = ">=1.26,<3"
+tinyxml2 = "==9"
+typing-extensions = ">=4.10.0, <5"
+
+[package.run-dependencies]
+tinyxml2 = "==9"
