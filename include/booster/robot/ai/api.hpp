@@ -157,5 +157,68 @@ public:
 public:
     std::string msg_;
 };
+
+enum class LuiApiId {
+    kStartAsr = 1000,
+    kStopAsr = 1001,
+    kStartTts = 1050,
+    kStopTts = 1051,
+    kSendTtsText = 1052,
+};
+
+class LuiTtsConfig {
+public:
+    LuiTtsConfig() = default;
+    LuiTtsConfig(const std::string &voice_type) :
+        voice_type_(voice_type) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        try {
+            voice_type_ = json.at("voice_type").get<std::string>();
+        } catch (const nlohmann::json::exception &e) {
+            throw std::runtime_error("LuiTtsConfig JSON error: " + std::string(e.what()));
+        }
+    }
+
+    nlohmann::json ToJson() const {
+        return {
+            {"voice_type", voice_type_}};
+    }
+
+public:
+    //  The timbre (or tone color) can be adjusted, allowing for settings like male or female voices
+    //  The following are examples of certain scenarios
+    //  zh_male_wennuanahu_moon_bigtts : Supports Chinese and American English.
+    //  zh_female_shuangkuaisisi_emo_v2_mars_bigtts : Supports Chinese and British English.
+    std::string voice_type_;
+};
+
+class LuiTtsParameter {
+public:
+    LuiTtsParameter() = default;
+    LuiTtsParameter(const std::string &text) :
+        text_(text) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        try {
+            text_ = json.at("text").get<std::string>();
+        } catch (const nlohmann::json::exception &e) {
+            throw std::runtime_error("LuiTtsParameter JSON error: " + std::string(e.what()));
+        }
+    }
+
+    nlohmann::json ToJson() const {
+        return {
+            {"text", text_}};
+    }
+
+public:
+    std::string text_;
+};
+
 }
 } // namespace booster::robot

@@ -59,7 +59,7 @@ public:
      * @brief Get current robot mode
      *
      * @param[out] get_mode_response Reference to store the response data, including:
-     *              - current_mode (RobotMode enum value)
+     * - current_mode (RobotMode enum value)
      *
      * @return 0 if success, otherwise return error code
      * @see ChangeMode() for mode switching API
@@ -82,9 +82,9 @@ public:
      * @brief Get current robot status
      *
      * @param[out] get_status_response Reference to store the response data, including:
-     *              - current_mode (RobotMode enum value)
-     *              - current_body_control (BodyControl enum value)
-     *              - current_actions (vector of Action enum values)
+     * - current_mode (RobotMode enum value)
+     * - current_body_control (BodyControl enum value)
+     * - current_actions (vector of Action enum values)
      *
      * @return 0 if success, otherwise return error code
      */
@@ -105,11 +105,11 @@ public:
      * @brief Get robot info
      *
      * @param[out] get_robot_info_response Reference to store the response data, including:
-     *              - name (std::string)
-     *              - nickname (std::string)
-     *              - version (std::string)
-     *              - model (std::string)
-     *              - serial_number (std::string)
+     * - name (std::string)
+     * - nickname (std::string)
+     * - version (std::string)
+     * - model (std::string)
+     * - serial_number (std::string)
      *
      * @return 0 if success, otherwise return error code
      */
@@ -220,15 +220,15 @@ public:
     }
 
     /**
-     *  @brief Move hand end-effector to a target posture(position & orientation) with an auxiliary point
+     * @brief Move hand end-effector to a target posture(position & orientation) with an auxiliary point
      *
-     *  @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach.
-     *  It contains position & orientation.
-     *  @param aux_posture Represents the auxiliary point on the end-effector's motion arc trajectory
-     *  @param time_mills Specifies the duration, in milliseconds, for completing the movement.
-     *  @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
+     * @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach.
+     * It contains position & orientation.
+     * @param aux_posture Represents the auxiliary point on the end-effector's motion arc trajectory
+     * @param time_mills Specifies the duration, in milliseconds, for completing the movement.
+     * @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
      *
-     *  @return 0 if success, otherwise return error code
+     * @return 0 if success, otherwise return error code
      */
     int32_t MoveHandEndEffectorWithAux(const Posture &target_posture, const Posture &aux_posture, int time_millis, HandIndex hand_index) {
         MoveHandEndEffectorParameter move_hand(target_posture, aux_posture, time_millis, hand_index);
@@ -237,19 +237,19 @@ public:
     }
 
     /**
-     *  @brief Move hand end-effector with a target posture(position & orientation)
-     *  @deprecated **This API is deprecated and will be removed in future versions.**
-     *              Please use the new API `MoveHandEndEffectorV2` instead.
-     *  @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach.
-     *                        It contains position & orientation,
-     *  @param time_mills Specifies the duration, in milliseconds, for completing the movement.
-     *  @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
+     * @brief Move hand end-effector with a target posture(position & orientation)
+     * @deprecated **This API is deprecated and will be removed in future versions.**
+     * Please use the new API `MoveHandEndEffectorV2` instead.
+     * @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach.
+     * It contains position & orientation,
+     * @param time_mills Specifies the duration, in milliseconds, for completing the movement.
+     * @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
      *
-     *  @return 0 if success, otherwise return error code
+     * @return 0 if success, otherwise return error code
      *
-     *  @details
-     *  **Reason for deprecation**: This API is deprecated due to an implicit rotational offset (rot) being applied to the target orientation.
-     *  The final orientation is calculated as orientation = rot * offset, which contradicts the parameter description of `target_posture`.
+     * @details
+     * **Reason for deprecation**: This API is deprecated due to an implicit rotational offset (rot) being applied to the target orientation.
+     * The final orientation is calculated as orientation = rot * offset, which contradicts the parameter description of `target_posture`.
      */
     int32_t MoveHandEndEffector(const Posture &target_posture, int time_millis, HandIndex hand_index) {
         MoveHandEndEffectorParameter move_hand(target_posture, time_millis, hand_index, false);
@@ -258,14 +258,14 @@ public:
     }
 
     /**
-     *  @brief Move hand end-effector with a target posture(position & orientation)
+     * @brief Move hand end-effector with a target posture(position & orientation)
      *
-     *  @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach.
-     *                        It contains position & orientation.
-     *  @param time_mills Specifies the duration, in milliseconds, for completing the movement.
-     *  @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
+     * @param target_posture Represents the target posture in base frame (torso frame) that the hand end-effector should reach.
+     * It contains position & orientation.
+     * @param time_mills Specifies the duration, in milliseconds, for completing the movement.
+     * @param hand_index Identifies which hand the parameter refers to (for instance, left hand or right hand).
      *
-     *  @return 0 if success, otherwise return error code
+     * @return 0 if success, otherwise return error code
      */
     int32_t MoveHandEndEffectorV2(const Posture &target_posture, int time_millis, HandIndex hand_index) {
         MoveHandEndEffectorParameter move_hand(target_posture, time_millis, hand_index, true);
@@ -455,6 +455,83 @@ public:
         UpperBodyCustomControlParameter upper_body_param(start);
         std::string param = upper_body_param.ToJson().dump();
         return SendApiRequest(LocoApiId::kUpperBodyCustomControl, param);
+    }
+
+    /**
+     * @brief Reset the robot's odometry
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t ResetOdometry() {
+        return SendApiRequest(LocoApiId::kResetOdometry, "");
+    }
+
+    /**
+     * @brief Load a custom lab model with configuration parameters.
+     * Only model_name, model_file_path, and traj_file_path are required.
+     *
+     * @param traj The custom trained trajectory configuration
+     * @param[out] tid The trajectory ID returned by the robot
+     *
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t LoadCustomTrainedTraj(const CustomTrainedTraj &traj, std::string &tid) {
+        std::string param = traj.ToJson().dump();
+        Response resp;
+        int32_t ret = SendApiRequestWithResponse(LocoApiId::kLoadCustomTrainedTraj, param, resp);
+        if (ret != 0) {
+            return ret;
+        }
+
+        nlohmann::json body_json = nlohmann::json::parse(resp.GetBody());
+        LoadCustomTrainedTrajResponse load_resp;
+        load_resp.FromJson(body_json);
+        tid = load_resp.tid_;
+
+        return 0;
+    }
+
+    /**
+     * @brief Activate a loaded custom trained trajectory
+     *
+     * @param tid The trajectory ID to activate
+     *
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t ActivateCustomTrainedTraj(const std::string &tid) {
+        CustomTrainedTrajParameter param_obj(tid);
+        std::string param = param_obj.ToJson().dump();
+        return SendApiRequest(LocoApiId::kActivateCustomTrainedTraj, param);
+    }
+
+    /**
+     * @brief Unload a custom trained trajectory
+     *
+     * @param tid The trajectory ID to unload
+     *
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t UnloadCustomTrainedTraj(const std::string &tid) {
+        CustomTrainedTrajParameter param_obj(tid);
+        std::string param = param_obj.ToJson().dump();
+        return SendApiRequest(LocoApiId::kUnloadCustomTrainedTraj, param);
+    }
+
+    /**
+     * @brief Enter wbc gait
+     *
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t EnterWBCGait() {
+        return SendApiRequest(LocoApiId::kEnterWBCGait, "");
+    }
+
+    /**
+     * @brief Exit WBC Gait
+     *
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t ExitWBCGait() {
+        return SendApiRequest(LocoApiId::kExitWBCGait, "");
     }
 
 private:

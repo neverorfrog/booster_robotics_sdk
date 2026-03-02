@@ -26,6 +26,7 @@ enum class BodyControl {
     kShoot = 9,          // Shoot body control, in shoot body control, the robot can scored with a powerful shot
     kInsideFoot = 10,    // Inside foot kick body control, in inside foot kick body control, the robot can do precise inside foot kick actions
     kGoalie = 11,        // Goalie body control, in goalie body control, the robot can perform goalie actions
+    kWBCGait = 12,       // Whole body control gait body control, in WBC gait, the robot walking by whole body control
 };
 
 enum class Action {
@@ -62,6 +63,8 @@ enum class ProneBodyControlPosture {
     kInactive = 1,
     kPushUp = 2,
     kLieDown = 3,
+    kSoccerLocomotion = 4,
+    kSoccerKicking = 5,
 };
 
 }
