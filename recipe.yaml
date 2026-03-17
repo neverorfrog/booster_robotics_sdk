@@ -1,6 +1,6 @@
 context:
   name: booster_robotics_sdk
-  version: "1.5.0"
+  version: "1.5.1"
 
 package:
   name: ${{ name }}
@@ -50,16 +50,16 @@ requirements:
 
 tests:
   - script:
-    - if: unix
-      then:
-        - test -f $PREFIX/lib/libbooster_robotics_sdk.a
-        - test -f $PREFIX/lib/libfastrtps.so
-        - test -f $PREFIX/lib/libfastcdr.so
-        - test -d $PREFIX/include/booster
-        - test -d $PREFIX/include/booster/robot
-      else:
-        - if not exist %LIBRARY_LIB%\\booster_robotics_sdk.lib exit 1
-        - if not exist %LIBRARY_INC%\\booster\\robot exit 1
+      - if: unix
+        then:
+          - test -f $PREFIX/lib/libbooster_robotics_sdk.a
+          - test -f $PREFIX/lib/libfastrtps.so
+          - test -f $PREFIX/lib/libfastcdr.so
+          - test -d $PREFIX/include/booster
+          - test -d $PREFIX/include/booster/robot
+        else:
+          - if not exist %LIBRARY_LIB%\\booster_robotics_sdk.lib exit 1
+          - if not exist %LIBRARY_INC%\\booster\\robot exit 1
 
 about:
   homepage: https://github.com/neverorfrog/booster_robotics_sdk

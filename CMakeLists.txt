@@ -23,11 +23,10 @@ file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/.clangd"
 
 # ============================ BUILD OPTIONS ==================================================
 option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_PYTHON_BINDING "Build python bindings" ON)
 option(GENERATE_CLANGD "Generate .clangd in project root" ON)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_compile_definitions("DEBUG")
+    add_compile_definitions("DEBUG")
 endif()
 
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
@@ -36,11 +35,11 @@ message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 # ============================= Dependencies ==================================================
 # Pick correct prebuilt archive for this host
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "arm64")
-  set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/aarch64")
-  set(THIRD_PARTY_ARCH "aarch64")
+    set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/aarch64")
+    set(THIRD_PARTY_ARCH "aarch64")
 else()
-  set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/x86_64")
-  set(THIRD_PARTY_ARCH "x86_64")
+    set(PREBUILT_ARCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/x86_64")
+    set(THIRD_PARTY_ARCH "x86_64")
 endif()
 
 # Set up third_party dependencies path
@@ -57,7 +56,7 @@ file(GLOB_RECURSE HEADERS ${CMAKE_SOURCE_DIR}/include/*.h)
 
 set(PREBUILT_LIB "${PREBUILT_ARCH_DIR}/libbooster_robotics_sdk.a")
 if(NOT EXISTS "${PREBUILT_LIB}")
-  message(FATAL_ERROR "Prebuilt library not found: ${PREBUILT_LIB}")
+    message(FATAL_ERROR "Prebuilt library not found: ${PREBUILT_LIB}")
 endif()
 
 add_library(${LIBRARY}_prebuilt STATIC IMPORTED)
@@ -186,110 +185,3 @@ install(
 )
 
 # ==============================================================================================
-
-# ==============================================================================
-#  PYTHON BINDINGS (The Pixi-Build-CMake Way)
-# ==============================================================================
-option(BUILD_PYTHON_BINDING "Build python bindings" ON) # Default to ON for this package
-set(BINDINGS_SRC "")
-if(EXISTS "${CMAKE_SOURCE_DIR}/python/binding.cpp")
-  set(BINDINGS_SRC "${CMAKE_SOURCE_DIR}/python/binding.cpp")
-endif()
-if(BUILD_PYTHON_BINDING)
-    # Python (Interpreter + Development.Module)
-    set(_PY_COMPS Interpreter Development.Module)
-    find_package(Python QUIET COMPONENTS ${_PY_COMPS})
-    if(NOT Python_FOUND)
-      find_package(Python3 REQUIRED COMPONENTS ${_PY_COMPS})
-      set(Python_EXECUTABLE ${Python3_EXECUTABLE})
-      set(Python_SITEARCH  ${Python3_SITEARCH})
-    endif()
-    
-    # Locate nanobind's CMake package via the Python module
-    execute_process(
-      COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
-      OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE _NB_CMAKE_DIR
-      RESULT_VARIABLE _NB_RET
-    )
-    if(NOT _NB_RET EQUAL 0)
-    message(FATAL_ERROR "Failed to locate nanobind via 'python -m nanobind --cmake_dir'. "
-    "Is 'nanobind' installed in this pixi env?")
-    endif()
-    set(nanobind_DIR "${_NB_CMAKE_DIR}")
-    find_package(nanobind CONFIG REQUIRED)
-
-    # Determine Python's site-packages (platlib)
-    execute_process(
-        COMMAND "${Python_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '.', 'base': '.'}))"
-        OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    string(REGEX REPLACE "^/" "" PYTHON_SITE_PACKAGES "${PYTHON_SITE_PACKAGES}")
-    message(STATUS "Python bindings will be installed to: \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}")
-
-    # Auto-detect module name from NB_MODULE(...) in Bindings.cpp (e.g., 'circuspy')
-    file(READ "${BINDINGS_SRC}" _NB_SRC)
-    string(REGEX MATCH "NB_MODULE\\s*\\(([A-Za-z_][A-Za-z0-9_]*)" _m "${_NB_SRC}")
-    if(NOT _m)
-      message(FATAL_ERROR "Could not find NB_MODULE(...) in ${BINDINGS_SRC}")
-    endif()
-    set(PY_MODULE_NAME "${CMAKE_MATCH_1}")
-    message(STATUS "nanobind: detected module name '${PY_MODULE_NAME}' from ${BINDINGS_SRC}")
-
-    # Build the nanobind module
-    nanobind_add_module(${PY_MODULE_NAME} ${BINDINGS_SRC})
-    target_link_libraries(${PY_MODULE_NAME} PRIVATE ${LIBRARY})
-    
-    # Set RPATH to find third_party libraries in the same directory (site-packages)
-    # This allows the module to find libfastrtps.so and libfastcdr.so at runtime
-    set_target_properties(${PY_MODULE_NAME} PROPERTIES
-      BUILD_RPATH "${THIRD_PARTY_LIB_DIR}"
-      INSTALL_RPATH "$ORIGIN"
-      INSTALL_RPATH_USE_LINK_PATH TRUE
-    )
-
-    # Install third_party libraries FIRST so they're available when the module loads
-    install(
-        FILES "${THIRD_PARTY_LIB_DIR}/libfastrtps.so"
-              "${THIRD_PARTY_LIB_DIR}/libfastcdr.so"
-        DESTINATION ${PYTHON_SITE_PACKAGES}
-    )
-
-    # Create version-specific symlinks matching the SONAME
-    install(CODE "
-        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-            libfastrtps.so
-            \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastrtps.so.2.13)
-        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-            libfastcdr.so
-            \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/libfastcdr.so.2)
-    ")
-
-    # Install Python module into the environment's site-packages
-    install(
-        TARGETS ${PY_MODULE_NAME}
-        LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES}
-    )
-    
-    # Generate stub files (.pyi) after installation
-    # Set LD_LIBRARY_PATH so stubgen can find the bundled libraries and conda dependencies
-    install(CODE "
-        message(STATUS \"Generating stubs for ${PY_MODULE_NAME}...\")
-        set(ENV{PYTHONPATH} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}:\$ENV{PYTHONPATH}\")
-        set(ENV{LD_LIBRARY_PATH} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}:\${CMAKE_INSTALL_PREFIX}/lib:\$ENV{LD_LIBRARY_PATH}\")
-        execute_process(
-            COMMAND ${Python_EXECUTABLE} -m nanobind.stubgen 
-                -m ${PY_MODULE_NAME}
-                -o \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/${PY_MODULE_NAME}.pyi
-            RESULT_VARIABLE _stubgen_result
-            OUTPUT_VARIABLE _stubgen_output
-            ERROR_VARIABLE _stubgen_error
-        )
-        if(NOT _stubgen_result EQUAL 0)
-            message(WARNING \"Failed to generate stubs for ${PY_MODULE_NAME}: \${_stubgen_error}\")
-        else()
-            message(STATUS \"Successfully generated stubs at \${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE_PACKAGES}/${PY_MODULE_NAME}.pyi\")
-        endif()
-    ")
-    
-endif()
