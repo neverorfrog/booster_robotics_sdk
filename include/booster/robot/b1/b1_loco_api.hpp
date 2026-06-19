@@ -53,6 +53,18 @@ enum class LocoApiId {
     kUnloadCustomTrainedTraj = 2034,
     kEnterWBCGait = 2035,
     kExitWBCGait = 2036,
+    kMoveDualHandEndEffector = 2037,
+    kVisualKick = 2038,
+    kLionDancePrepare = 2039,
+    kLionDanceStart = 2040,
+    kLionDanceMove = 2041,
+    kSwitchGait = 2042,
+};
+
+enum class GaitType {
+    kWholeBodyHumanlikeGait = 0,
+    kHalfBodyHumanlikeGait = 1,
+    kHalfBodyHumanlikeGaitV2 = 2,
 };
 
 class RotateHeadParameter {
@@ -101,6 +113,28 @@ public:
 
 public:
     booster::robot::RobotMode mode_;
+};
+
+class SwitchGaitParameter {
+public:
+    SwitchGaitParameter() = default;
+    SwitchGaitParameter(GaitType gait_type) :
+        gait_type_(gait_type) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        gait_type_ = static_cast<GaitType>(json["gait_type"]);
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["gait_type"] = static_cast<int>(gait_type_);
+        return json;
+    }
+
+public:
+    GaitType gait_type_ = GaitType::kWholeBodyHumanlikeGait;
 };
 
 class GetModeResponse {
@@ -164,6 +198,8 @@ public:
         version_ = json["version"];
         model_ = json["model"];
         serial_number_ = json["serial_number"];
+        edition_ = json["edition"];
+        region_ = json["region"];
     }
 
     nlohmann::json ToJson() const {
@@ -173,6 +209,8 @@ public:
         json["version"] = version_;
         json["model"] = model_;
         json["serial_number"] = serial_number_;
+        json["edition"] = edition_;
+        json["region"] = region_;
         return json;
     }
 
@@ -182,6 +220,8 @@ public:
     std::string version_;       // firmware version
     std::string model_;         // model name for robot
     std::string serial_number_; // serial number for robot
+    std::string edition_;       // edition for robot, e.g. K1 XXX, T1 XXX
+    std::string region_;        // region for robot, e.g. CN, Global
 };
 
 class MoveParameter {
@@ -462,6 +502,39 @@ public:
     HandIndex hand_index_;
 };
 
+class MoveDualHandEndEffectorParameter {
+public:
+    MoveDualHandEndEffectorParameter() = default;
+    MoveDualHandEndEffectorParameter(
+        const Posture &left_target_posture,
+        const Posture &right_target_posture,
+        int time_millis) :
+        left_target_posture_(left_target_posture),
+        right_target_posture_(right_target_posture),
+        time_millis_(time_millis) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        left_target_posture_.FromJson(json["left_target_posture"]);
+        right_target_posture_.FromJson(json["right_target_posture"]);
+        time_millis_ = json["time_millis"];
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["left_target_posture"] = left_target_posture_.ToJson();
+        json["right_target_posture"] = right_target_posture_.ToJson();
+        json["time_millis"] = time_millis_;
+        return json;
+    }
+
+public:
+    Posture left_target_posture_;
+    Posture right_target_posture_;
+    int time_millis_ = 1000;
+};
+
 class GetFrameTransformParameter {
 public:
     GetFrameTransformParameter() = default;
@@ -739,9 +812,11 @@ enum class WholeBodyDanceId {
     kMichaelDance1 = 1,
     kMichaelDance2 = 2,
     kMichaelDance3 = 3,
-    kMoonWalk = 4,
     kBoxingStyleKick = 5,
     kRoundhouseKick = 6,
+    kShanHeGuRenDance = 7,
+    kGaiGeChunFengDance = 8,
+    kMichaelDance1And2 = 9,
 };
 
 class WholeBodyDanceParameter {
@@ -933,6 +1008,95 @@ public:
 
 public:
     std::string tid_;
+};
+
+enum class VisualKickVersion {
+    kV1 = 0, // Initial/Base version
+    kV2 = 1, // V2 version, stronger kicking force
+};
+
+class VisualKickParameter {
+public:
+    VisualKickParameter() = default;
+    VisualKickParameter(bool start, VisualKickVersion version = VisualKickVersion::kV1) :
+        start_(start), version_(version) {
+    }
+
+public:
+    void FromJson(nlohmann::json &json) {
+        start_ = json["start"];
+        version_ = static_cast<VisualKickVersion>(json["version"]);
+    }
+
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["start"] = start_;
+        json["version"] = static_cast<int>(version_);
+        return json;
+    }
+
+private:
+    bool start_;
+    VisualKickVersion version_;
+};
+
+class LionDancePrepareParameter {
+public:
+    LionDancePrepareParameter() = default;
+    LionDancePrepareParameter(bool start) :
+        start_(start) {
+    }
+
+    void FromJson(nlohmann::json &json) {
+        start_ = json["start"];
+    }
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["start"] = start_;
+        return json;
+    }
+
+private:
+    bool start_;
+};
+
+class LionDanceMoveParameter {
+public:
+    LionDanceMoveParameter() = default;
+    LionDanceMoveParameter(bool start) :
+        start_(start) {
+    }
+    void FromJson(nlohmann::json &json) {
+        start_ = json["start"];
+    }
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["start"] = start_;
+        return json;
+    }
+
+private:
+    bool start_;
+};
+
+class LionDanceStartParameter {
+public:
+    LionDanceStartParameter() = default;
+    LionDanceStartParameter(int dance_idx) :
+        dance_idx_(dance_idx) {
+    }
+
+    void FromJson(nlohmann::json &json) {
+        dance_idx_ = json["dance_idx"];
+    }
+    nlohmann::json ToJson() const {
+        nlohmann::json json;
+        json["dance_idx"] = dance_idx_;
+        return json;
+    }
+
+private:
+    int dance_idx_;
 };
 
 }
