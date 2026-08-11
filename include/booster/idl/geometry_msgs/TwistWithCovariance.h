@@ -26,29 +26,28 @@
 #include <array>
 #include <bitset>
 #include <cstdint>
-#include <fastcdr/cdr/fixed_size_string.hpp>
-#include <fastcdr/xcdr/external.hpp>
-#include <fastcdr/xcdr/optional.hpp>
+#include <booster_fastdds/fastcdr/cdr/fixed_size_string.hpp>
+#include <booster_fastdds/fastcdr/xcdr/external.hpp>
+#include <booster_fastdds/fastcdr/xcdr/optional.hpp>
 #include <map>
 #include <string>
 #include <vector>
 
 // ------------------------------ Pub Sub Type Start
 // ----------------------------
-#include <fastdds/rtps/common/InstanceHandle.h>
-#include <fastdds/rtps/common/SerializedPayload.h>
-#include <fastrtps/utils/md5.h>
+#include <booster_fastdds/fastdds/rtps/common/InstanceHandle.h>
+#include <booster_fastdds/fastdds/rtps/common/SerializedPayload.h>
+#include <booster_fastdds/fastrtps/utils/md5.h>
 
-#include <fastdds/dds/core/policy/QosPolicies.hpp>
-#include <fastdds/dds/topic/TopicDataType.hpp>
+#include <booster_fastdds/fastdds/dds/core/policy/QosPolicies.hpp>
+#include <booster_fastdds/fastdds/dds/topic/TopicDataType.hpp>
 
-#if !defined(GEN_API_VER) || (GEN_API_VER != 2)
+#if !defined(BOOSTER_FASTDDS_GEN_API_VER) || (BOOSTER_FASTDDS_GEN_API_VER != 2)
 #error \
     Generated TwistWithCovariance is not compatible with current installed Fast DDS. Please, regenerate it with fastddsgen.
-#endif  // GEN_API_VER
+#endif  // BOOSTER_FASTDDS_GEN_API_VER
 
 // ------------------------------ Pub Sub Type End ----------------------------
-
 
 #include "Twist.h"
 
@@ -76,46 +75,53 @@
 #define TWISTWITHCOVARIANCE_DllAPI
 #endif  // _WIN32
 
-namespace eprosima {
+namespace booster_eprosima {
 namespace fastcdr {
 class Cdr;
 class CdrSizeCalculator;
 }  // namespace fastcdr
-}  // namespace eprosima
+}  // namespace booster_eprosima
 
 namespace geometry_msgs {
+
 namespace msg {
 
 /*!
- * @brief This class represents the structure TwistWithCovariance defined by the user in the
- * IDL file.
+ * @brief This class represents the structure TwistWithCovariance defined by the
+ * user in the IDL file.
  * @ingroup TwistWithCovariance
  */
-class TwistWithCovariance : public eprosima::fastdds::dds::TopicDataType {
+class TwistWithCovariance : public booster_eprosima::fastdds::dds::TopicDataType {
  public:
   /*!
    * @brief Copy constructor.
-   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance
+   * that will be copied.
    */
   eProsima_user_DllExport TwistWithCovariance(const TwistWithCovariance& x);
 
   /*!
    * @brief Move constructor.
-   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance
+   * that will be copied.
    */
   eProsima_user_DllExport TwistWithCovariance(TwistWithCovariance&& x) noexcept;
 
   /*!
    * @brief Copy assignment.
-   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance
+   * that will be copied.
    */
-  eProsima_user_DllExport TwistWithCovariance& operator=(const TwistWithCovariance& x);
+  eProsima_user_DllExport TwistWithCovariance& operator=(
+      const TwistWithCovariance& x);
 
   /*!
    * @brief Move assignment.
-   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::TwistWithCovariance
+   * that will be copied.
    */
-  eProsima_user_DllExport TwistWithCovariance& operator=(TwistWithCovariance&& x) noexcept;
+  eProsima_user_DllExport TwistWithCovariance& operator=(
+      TwistWithCovariance&& x) noexcept;
 
   /*!
    * @brief Comparison operator.
@@ -133,8 +139,7 @@ class TwistWithCovariance : public eprosima::fastdds::dds::TopicDataType {
    * @brief This function copies the value in member twist
    * @param _twist New value to be copied in member twist
    */
-  eProsima_user_DllExport void twist(
-      const geometry_msgs::msg::Twist& _twist);
+  eProsima_user_DllExport void twist(const geometry_msgs::msg::Twist& _twist);
 
   /*!
    * @brief This function moves the value in member twist
@@ -159,29 +164,29 @@ class TwistWithCovariance : public eprosima::fastdds::dds::TopicDataType {
    * @param _covariance New value to be copied in member covariance
    */
   eProsima_user_DllExport void covariance(
-      const double__36& _covariance);
+      const std::array<double, 36>& _covariance);
 
   /*!
    * @brief This function moves the value in member covariance
    * @param _covariance New value to be moved in member covariance
    */
-  eProsima_user_DllExport void covariance(double__36&& _covariance);
+  eProsima_user_DllExport void covariance(std::array<double, 36>&& _covariance);
 
   /*!
    * @brief This function returns a constant reference to member covariance
    * @return Constant reference to member covariance
    */
-  eProsima_user_DllExport const double__36& covariance() const;
+  eProsima_user_DllExport const std::array<double, 36>& covariance() const;
 
   /*!
    * @brief This function returns a reference to member covariance
    * @return Reference to member covariance
    */
-  eProsima_user_DllExport double__36& covariance();
+  eProsima_user_DllExport std::array<double, 36>& covariance();
 
  private:
   geometry_msgs::msg::Twist m_twist;
-  double__36 m_covariance;
+  std::array<double, 36> m_covariance{0.0};
 
  public:
   typedef TwistWithCovariance type;
@@ -192,75 +197,75 @@ class TwistWithCovariance : public eprosima::fastdds::dds::TopicDataType {
 
   eProsima_user_DllExport bool serialize(
       void* data,
-      eprosima::fastrtps::rtps::SerializedPayload_t* payload) override {
+      booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload) override {
     return serialize(data, payload,
-                     eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+                     booster_eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
   }
 
   eProsima_user_DllExport bool serialize(
-      void* data, eprosima::fastrtps::rtps::SerializedPayload_t* payload,
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      void* data, booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload,
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       override;
 
   eProsima_user_DllExport bool deserialize(
-      eprosima::fastrtps::rtps::SerializedPayload_t* payload,
+      booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload,
       void* data) override;
 
   eProsima_user_DllExport std::function<uint32_t()> getSerializedSizeProvider(
       void* data) override {
     return getSerializedSizeProvider(
-        data, eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+        data, booster_eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
   }
 
   eProsima_user_DllExport std::function<uint32_t()> getSerializedSizeProvider(
       void* data,
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       override;
 
   eProsima_user_DllExport bool getKey(
-      void* data, eprosima::fastrtps::rtps::InstanceHandle_t* ihandle,
+      void* data, booster_eprosima::fastrtps::rtps::InstanceHandle_t* ihandle,
       bool force_md5 = false) override;
 
   eProsima_user_DllExport void* createData() override;
 
   eProsima_user_DllExport void deleteData(void* data) override;
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
   eProsima_user_DllExport inline bool is_bounded() const override {
     return true;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
   eProsima_user_DllExport inline bool is_plain() const override {
-    return is_plain(eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+    return false;
   }
 
   eProsima_user_DllExport inline bool is_plain(
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       const override {
     static_cast<void>(data_representation);
-    return true;
+    return false;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
   eProsima_user_DllExport inline bool construct_sample(
       void* memory) const override {
-    new (memory) TwistWithCovariance();
-    return true;
+    static_cast<void>(memory);
+    return false;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
 
-  MD5 m_md5;
+  BoosterFastddsMD5 m_md5;
   unsigned char* m_keyBuffer;
-
 };
 
 }  // namespace msg
+
 }  // namespace geometry_msgs
 
 #endif  // _FAST_DDS_GENERATED_GEOMETRY_MSGS_MSG_TWISTWITHCOVARIANCE_H_

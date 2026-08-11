@@ -26,30 +26,28 @@
 #include <array>
 #include <bitset>
 #include <cstdint>
-#include <fastcdr/cdr/fixed_size_string.hpp>
-#include <fastcdr/xcdr/external.hpp>
-#include <fastcdr/xcdr/optional.hpp>
+#include <booster_fastdds/fastcdr/cdr/fixed_size_string.hpp>
+#include <booster_fastdds/fastcdr/xcdr/external.hpp>
+#include <booster_fastdds/fastcdr/xcdr/optional.hpp>
 #include <map>
 #include <string>
 #include <vector>
 
 // ------------------------------ Pub Sub Type Start
 // ----------------------------
-#include <fastdds/rtps/common/InstanceHandle.h>
-#include <fastdds/rtps/common/SerializedPayload.h>
-#include <fastrtps/utils/md5.h>
+#include <booster_fastdds/fastdds/rtps/common/InstanceHandle.h>
+#include <booster_fastdds/fastdds/rtps/common/SerializedPayload.h>
+#include <booster_fastdds/fastrtps/utils/md5.h>
 
-#include <fastdds/dds/core/policy/QosPolicies.hpp>
-#include <fastdds/dds/topic/TopicDataType.hpp>
+#include <booster_fastdds/fastdds/dds/core/policy/QosPolicies.hpp>
+#include <booster_fastdds/fastdds/dds/topic/TopicDataType.hpp>
 
-#if !defined(GEN_API_VER) || (GEN_API_VER != 2)
+#if !defined(BOOSTER_FASTDDS_GEN_API_VER) || (BOOSTER_FASTDDS_GEN_API_VER != 2)
 #error \
     Generated Quaternion is not compatible with current installed Fast DDS. Please, regenerate it with fastddsgen.
-#endif  // GEN_API_VER
+#endif  // BOOSTER_FASTDDS_GEN_API_VER
 
 // ------------------------------ Pub Sub Type End ----------------------------
-
-
 
 #if defined(_WIN32)
 #if defined(EPROSIMA_USER_DLL_EXPORT)
@@ -75,44 +73,49 @@
 #define QUATERNION_DllAPI
 #endif  // _WIN32
 
-namespace eprosima {
+namespace booster_eprosima {
 namespace fastcdr {
 class Cdr;
 class CdrSizeCalculator;
 }  // namespace fastcdr
-}  // namespace eprosima
+}  // namespace booster_eprosima
 
 namespace geometry_msgs {
+
 namespace msg {
 
 /*!
- * @brief This class represents the structure Quaternion defined by the user in the
- * IDL file.
+ * @brief This class represents the structure Quaternion defined by the user in
+ * the IDL file.
  * @ingroup Quaternion
  */
-class Quaternion : public eprosima::fastdds::dds::TopicDataType {
+class Quaternion : public booster_eprosima::fastdds::dds::TopicDataType {
  public:
   /*!
    * @brief Copy constructor.
-   * @param x Reference to the object geometry_msgs::msg::Quaternion that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Quaternion that will
+   * be copied.
    */
   eProsima_user_DllExport Quaternion(const Quaternion& x);
 
   /*!
    * @brief Move constructor.
-   * @param x Reference to the object geometry_msgs::msg::Quaternion that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Quaternion that will
+   * be copied.
    */
   eProsima_user_DllExport Quaternion(Quaternion&& x) noexcept;
 
   /*!
    * @brief Copy assignment.
-   * @param x Reference to the object geometry_msgs::msg::Quaternion that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Quaternion that will
+   * be copied.
    */
   eProsima_user_DllExport Quaternion& operator=(const Quaternion& x);
 
   /*!
    * @brief Move assignment.
-   * @param x Reference to the object geometry_msgs::msg::Quaternion that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Quaternion that will
+   * be copied.
    */
   eProsima_user_DllExport Quaternion& operator=(Quaternion&& x) noexcept;
 
@@ -201,10 +204,10 @@ class Quaternion : public eprosima::fastdds::dds::TopicDataType {
   eProsima_user_DllExport double& w();
 
  private:
-  double m_x;
-  double m_y;
-  double m_z;
-  double m_w;
+  double m_x{0.0};
+  double m_y{0.0};
+  double m_z{0.0};
+  double m_w{1.0};
 
  public:
   typedef Quaternion type;
@@ -215,75 +218,75 @@ class Quaternion : public eprosima::fastdds::dds::TopicDataType {
 
   eProsima_user_DllExport bool serialize(
       void* data,
-      eprosima::fastrtps::rtps::SerializedPayload_t* payload) override {
+      booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload) override {
     return serialize(data, payload,
-                     eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+                     booster_eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
   }
 
   eProsima_user_DllExport bool serialize(
-      void* data, eprosima::fastrtps::rtps::SerializedPayload_t* payload,
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      void* data, booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload,
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       override;
 
   eProsima_user_DllExport bool deserialize(
-      eprosima::fastrtps::rtps::SerializedPayload_t* payload,
+      booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload,
       void* data) override;
 
   eProsima_user_DllExport std::function<uint32_t()> getSerializedSizeProvider(
       void* data) override {
     return getSerializedSizeProvider(
-        data, eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+        data, booster_eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
   }
 
   eProsima_user_DllExport std::function<uint32_t()> getSerializedSizeProvider(
       void* data,
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       override;
 
   eProsima_user_DllExport bool getKey(
-      void* data, eprosima::fastrtps::rtps::InstanceHandle_t* ihandle,
+      void* data, booster_eprosima::fastrtps::rtps::InstanceHandle_t* ihandle,
       bool force_md5 = false) override;
 
   eProsima_user_DllExport void* createData() override;
 
   eProsima_user_DllExport void deleteData(void* data) override;
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
   eProsima_user_DllExport inline bool is_bounded() const override {
     return true;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
   eProsima_user_DllExport inline bool is_plain() const override {
-    return is_plain(eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+    return false;
   }
 
   eProsima_user_DllExport inline bool is_plain(
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       const override {
     static_cast<void>(data_representation);
-    return true;
+    return false;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
   eProsima_user_DllExport inline bool construct_sample(
       void* memory) const override {
-    new (memory) Quaternion();
-    return true;
+    static_cast<void>(memory);
+    return false;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
 
-  MD5 m_md5;
+  BoosterFastddsMD5 m_md5;
   unsigned char* m_keyBuffer;
-
 };
 
 }  // namespace msg
+
 }  // namespace geometry_msgs
 
 #endif  // _FAST_DDS_GENERATED_GEOMETRY_MSGS_MSG_QUATERNION_H_

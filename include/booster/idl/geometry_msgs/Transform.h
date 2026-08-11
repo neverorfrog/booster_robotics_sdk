@@ -26,29 +26,28 @@
 #include <array>
 #include <bitset>
 #include <cstdint>
-#include <fastcdr/cdr/fixed_size_string.hpp>
-#include <fastcdr/xcdr/external.hpp>
-#include <fastcdr/xcdr/optional.hpp>
+#include <booster_fastdds/fastcdr/cdr/fixed_size_string.hpp>
+#include <booster_fastdds/fastcdr/xcdr/external.hpp>
+#include <booster_fastdds/fastcdr/xcdr/optional.hpp>
 #include <map>
 #include <string>
 #include <vector>
 
 // ------------------------------ Pub Sub Type Start
 // ----------------------------
-#include <fastdds/rtps/common/InstanceHandle.h>
-#include <fastdds/rtps/common/SerializedPayload.h>
-#include <fastrtps/utils/md5.h>
+#include <booster_fastdds/fastdds/rtps/common/InstanceHandle.h>
+#include <booster_fastdds/fastdds/rtps/common/SerializedPayload.h>
+#include <booster_fastdds/fastrtps/utils/md5.h>
 
-#include <fastdds/dds/core/policy/QosPolicies.hpp>
-#include <fastdds/dds/topic/TopicDataType.hpp>
+#include <booster_fastdds/fastdds/dds/core/policy/QosPolicies.hpp>
+#include <booster_fastdds/fastdds/dds/topic/TopicDataType.hpp>
 
-#if !defined(GEN_API_VER) || (GEN_API_VER != 2)
+#if !defined(BOOSTER_FASTDDS_GEN_API_VER) || (BOOSTER_FASTDDS_GEN_API_VER != 2)
 #error \
     Generated Transform is not compatible with current installed Fast DDS. Please, regenerate it with fastddsgen.
-#endif  // GEN_API_VER
+#endif  // BOOSTER_FASTDDS_GEN_API_VER
 
 // ------------------------------ Pub Sub Type End ----------------------------
-
 
 #include "Quaternion.h"
 #include "Vector3.h"
@@ -77,44 +76,49 @@
 #define TRANSFORM_DllAPI
 #endif  // _WIN32
 
-namespace eprosima {
+namespace booster_eprosima {
 namespace fastcdr {
 class Cdr;
 class CdrSizeCalculator;
 }  // namespace fastcdr
-}  // namespace eprosima
+}  // namespace booster_eprosima
 
 namespace geometry_msgs {
+
 namespace msg {
 
 /*!
- * @brief This class represents the structure Transform defined by the user in the
- * IDL file.
+ * @brief This class represents the structure Transform defined by the user in
+ * the IDL file.
  * @ingroup Transform
  */
-class Transform : public eprosima::fastdds::dds::TopicDataType {
+class Transform : public booster_eprosima::fastdds::dds::TopicDataType {
  public:
   /*!
    * @brief Copy constructor.
-   * @param x Reference to the object geometry_msgs::msg::Transform that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Transform that will be
+   * copied.
    */
   eProsima_user_DllExport Transform(const Transform& x);
 
   /*!
    * @brief Move constructor.
-   * @param x Reference to the object geometry_msgs::msg::Transform that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Transform that will be
+   * copied.
    */
   eProsima_user_DllExport Transform(Transform&& x) noexcept;
 
   /*!
    * @brief Copy assignment.
-   * @param x Reference to the object geometry_msgs::msg::Transform that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Transform that will be
+   * copied.
    */
   eProsima_user_DllExport Transform& operator=(const Transform& x);
 
   /*!
    * @brief Move assignment.
-   * @param x Reference to the object geometry_msgs::msg::Transform that will be copied.
+   * @param x Reference to the object geometry_msgs::msg::Transform that will be
+   * copied.
    */
   eProsima_user_DllExport Transform& operator=(Transform&& x) noexcept;
 
@@ -141,13 +145,15 @@ class Transform : public eprosima::fastdds::dds::TopicDataType {
    * @brief This function moves the value in member translation
    * @param _translation New value to be moved in member translation
    */
-  eProsima_user_DllExport void translation(geometry_msgs::msg::Vector3&& _translation);
+  eProsima_user_DllExport void translation(
+      geometry_msgs::msg::Vector3&& _translation);
 
   /*!
    * @brief This function returns a constant reference to member translation
    * @return Constant reference to member translation
    */
-  eProsima_user_DllExport const geometry_msgs::msg::Vector3& translation() const;
+  eProsima_user_DllExport const geometry_msgs::msg::Vector3& translation()
+      const;
 
   /*!
    * @brief This function returns a reference to member translation
@@ -166,13 +172,15 @@ class Transform : public eprosima::fastdds::dds::TopicDataType {
    * @brief This function moves the value in member rotation
    * @param _rotation New value to be moved in member rotation
    */
-  eProsima_user_DllExport void rotation(geometry_msgs::msg::Quaternion&& _rotation);
+  eProsima_user_DllExport void rotation(
+      geometry_msgs::msg::Quaternion&& _rotation);
 
   /*!
    * @brief This function returns a constant reference to member rotation
    * @return Constant reference to member rotation
    */
-  eProsima_user_DllExport const geometry_msgs::msg::Quaternion& rotation() const;
+  eProsima_user_DllExport const geometry_msgs::msg::Quaternion& rotation()
+      const;
 
   /*!
    * @brief This function returns a reference to member rotation
@@ -193,75 +201,75 @@ class Transform : public eprosima::fastdds::dds::TopicDataType {
 
   eProsima_user_DllExport bool serialize(
       void* data,
-      eprosima::fastrtps::rtps::SerializedPayload_t* payload) override {
+      booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload) override {
     return serialize(data, payload,
-                     eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+                     booster_eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
   }
 
   eProsima_user_DllExport bool serialize(
-      void* data, eprosima::fastrtps::rtps::SerializedPayload_t* payload,
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      void* data, booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload,
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       override;
 
   eProsima_user_DllExport bool deserialize(
-      eprosima::fastrtps::rtps::SerializedPayload_t* payload,
+      booster_eprosima::fastrtps::rtps::SerializedPayload_t* payload,
       void* data) override;
 
   eProsima_user_DllExport std::function<uint32_t()> getSerializedSizeProvider(
       void* data) override {
     return getSerializedSizeProvider(
-        data, eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+        data, booster_eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
   }
 
   eProsima_user_DllExport std::function<uint32_t()> getSerializedSizeProvider(
       void* data,
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       override;
 
   eProsima_user_DllExport bool getKey(
-      void* data, eprosima::fastrtps::rtps::InstanceHandle_t* ihandle,
+      void* data, booster_eprosima::fastrtps::rtps::InstanceHandle_t* ihandle,
       bool force_md5 = false) override;
 
   eProsima_user_DllExport void* createData() override;
 
   eProsima_user_DllExport void deleteData(void* data) override;
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
   eProsima_user_DllExport inline bool is_bounded() const override {
     return true;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_BOUNDED
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
   eProsima_user_DllExport inline bool is_plain() const override {
-    return is_plain(eprosima::fastdds::dds::DEFAULT_DATA_REPRESENTATION);
+    return false;
   }
 
   eProsima_user_DllExport inline bool is_plain(
-      eprosima::fastdds::dds::DataRepresentationId_t data_representation)
+      booster_eprosima::fastdds::dds::DataRepresentationId_t data_representation)
       const override {
     static_cast<void>(data_representation);
-    return true;
+    return false;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_IS_PLAIN
 
-#ifdef TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
+#ifdef BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
   eProsima_user_DllExport inline bool construct_sample(
       void* memory) const override {
-    new (memory) Transform();
-    return true;
+    static_cast<void>(memory);
+    return false;
   }
 
-#endif  // TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
+#endif  // BOOSTER_FASTDDS_TOPIC_DATA_TYPE_API_HAS_CONSTRUCT_SAMPLE
 
-  MD5 m_md5;
+  BoosterFastddsMD5 m_md5;
   unsigned char* m_keyBuffer;
-
 };
 
 }  // namespace msg
+
 }  // namespace geometry_msgs
 
 #endif  // _FAST_DDS_GENERATED_GEOMETRY_MSGS_MSG_TRANSFORM_H_

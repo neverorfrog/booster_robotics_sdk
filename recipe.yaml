@@ -1,6 +1,6 @@
 context:
   name: booster_robotics_sdk
-  version: "1.6.2"
+  version: "1.7.0"
 
 package:
   name: ${{ name }}
@@ -15,7 +15,6 @@ source:
         - build/**
         - output/**
         - example/**
-        - third_party/include/fastdds/statistics/**
 
 build:
   number: 0
@@ -53,8 +52,6 @@ tests:
       - if: unix
         then:
           - test -f $PREFIX/lib/libbooster_robotics_sdk.a
-          - test -f $PREFIX/lib/libfastrtps.so
-          - test -f $PREFIX/lib/libfastcdr.so
           - test -d $PREFIX/include/booster
           - test -d $PREFIX/include/booster/robot
         else:
