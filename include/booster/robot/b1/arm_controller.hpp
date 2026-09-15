@@ -60,8 +60,8 @@ enum class ArmJoint {
  * 100 Hz. The server applies configured joint-position limits.
  *
  * @note Supported model: K1 | T1
- * @note T2 uses the 7-DOF layout described by JointIndexWith7DofArm and is not
- * compatible with this controller.
+ * @note T1_7DofArm uses the 7-DOF layout described by JointIndexWith7DofArm and
+ * is not compatible with this controller.
  * @note This class is not thread-safe. Queue and execute motions from one
  * application thread.
  * @warning This is direct actuator control. Keep the robot supported, provide

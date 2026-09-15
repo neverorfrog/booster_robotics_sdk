@@ -120,7 +120,8 @@ struct RecorderInitOptions {
 struct AudioCaptureStreamOptions {
     bool enable_raw_pcm{true};
     bool enable_naec_pcm{false};
-    PcmFormat requested_raw_format{16000, 1, 16};
+    // BoosterAEC raw PCM default: 16 kHz, 3 channels, 16-bit.
+    PcmFormat requested_raw_format{16000, 3, 16};
 };
 
 /** @brief Snapshot of playback progress and state. */

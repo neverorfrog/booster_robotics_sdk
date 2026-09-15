@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <booster/robot/rpc/rpc_client.hpp>
+#include <booster/robot/rpc/rpc_operation_client.hpp>
 #include "b1_loco_api.hpp"
 
 namespace booster {
@@ -68,7 +69,9 @@ public:
     bool WaitForService(
         int64_t timeout_ms = booster::robot::RpcClient::kDefaultWaitForServiceTimeoutMs,
         bool require_response_path = true);
-
+    bool WaitForOperationService(
+        int64_t timeout_ms = RpcClient::kDefaultWaitForServiceTimeoutMs,
+        bool require_event_path = true);
     /**
      * @brief Sends a request and waits up to the default one-second timeout.
      *
@@ -101,6 +104,23 @@ public:
      * @pre Init() has been called.
      */
     int32_t SendApiRequestFireAndForget(LocoApiId api_id, const std::string &param);
+
+    /**
+     * @brief Send a non-blocking API operation and receive execution progress/result later.
+     *
+     * The returned submit result only means the request was submitted locally.
+     * The server start decision is delivered through start_callback, and final
+     * execution status is delivered only through result_callback.
+     */
+    ApiOperationSubmitResult AsyncSendApiRequest(
+        LocoApiId api_id,
+        const std::string &param);
+    ApiOperationSubmitResult AsyncSendApiRequest(
+        LocoApiId api_id,
+        const std::string &param,
+        const SendApiRequestOptions &options);
+    std::shared_future<int32_t> AsyncCancelOperation(
+        const ApiOperationHandle::SharedPtr &operation_handle);
 
     /**
      * @brief Sends a request and returns the complete RPC response.
@@ -792,6 +812,22 @@ public:
     }
 
     /**
+     * @brief Reset the robot's odometry to a target pose
+     * @param x target x position in meters
+     * @param y target y position in meters
+     * @param theta target yaw in radians
+     * @return 0 if success, otherwise return error code
+     */
+    int32_t ResetOdometryTo(double x, double y, double theta) {
+        const nlohmann::json param = {
+            {"x", x},
+            {"y", y},
+            {"theta", theta},
+        };
+        return SendApiRequest(LocoApiId::kResetOdometry, param.dump());
+    }
+
+    /**
      * @brief Loads a custom trained trajectory and its model configuration.
      * @note Supported model: K1 | T2
      *
@@ -1017,6 +1053,7 @@ public:
 
 private:
     std::shared_ptr<RpcClient> rpc_client_; ///< Underlying locomotion RPC transport.
+    std::shared_ptr<RpcOperationClient> rpc_operation_client_;
 };
 
 }

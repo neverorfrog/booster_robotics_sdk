@@ -76,6 +76,10 @@ const std::string LOCO_SERVICE_NAME = "loco";
 /** @brief Version of the B1 locomotion RPC API described by this header. */
 const std::string LOCO_API_VERSION = "1.0.0.1";
 
+/* RPC channel names */
+const std::string kLocoApiChannelName = "rt/LocoApiTopic";
+const std::string kLocoApiOperationEventChannelName = "rt/LocoApiOperationEvent";
+
 /**
  * @brief Numeric identifiers for B1 locomotion RPC operations.
  *

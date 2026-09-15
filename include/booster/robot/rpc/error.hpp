@@ -18,6 +18,7 @@ const int64_t kRpcStatusCodeRequestTooFrequent = 429;    ///< Request rate excee
 const int64_t kRpcStatusCodeInternalServerError = 500;   ///< Service-side internal failure.
 const int64_t kRpcStatusCodeServerRefused = 501;         ///< Service refused the request.
 const int64_t kRpcStatusCodeStateTransitionFailed = 502; ///< Robot state-machine transition failed.
+const int64_t kRpcStatusCodeLowBattery = 503;            ///< Motion request refused because the battery is low.
 
 }
 } // namespace booster::robot

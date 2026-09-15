@@ -58,7 +58,10 @@ public:
 private:
     static Response MakeErrorResponse(int64_t status, const std::string &body = "");
     bool WaitForEndpoints(bool require_response_path, int64_t timeout_ms) const;
-    bool PublishRequest(const Request &req, const std::string &uuid, bool expect_response);
+    bool PublishRequest(
+        const Request &req,
+        const std::string &uuid,
+        RpcCallMode call_mode);
     void DdsSubMsgHandler(const void *msg);
 
     std::mutex mutex_;

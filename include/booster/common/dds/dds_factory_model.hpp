@@ -69,11 +69,13 @@ public:
     void SetWriter(
         DdsTopicChannelPtr<MSG> topic_channel,
         bool reliable = false) {
-        if (topic_channel == nullptr) {
-            std::cerr << "Failed to set writer: topic channel is null." << std::endl;
+        if (topic_channel == nullptr || publisher_ == nullptr) {
+            std::cerr << "Failed to set writer: topic channel or publisher is null." << std::endl;
             return;
         }
-        auto writer_qos = writer_qos_;
+        // Read the default after Fast DDS has loaded the XML profile. Passing a
+        // copied DATAWRITER_QOS_DEFAULT bypasses that profile in this Fast DDS version.
+        auto writer_qos = publisher_->get_default_datawriter_qos();
         if (reliable) {
             writer_qos.reliability().kind = booster_eprosima::fastdds::dds::RELIABLE_RELIABILITY_QOS;
         }
@@ -86,12 +88,14 @@ public:
         const std::function<void(const void *)> &handler,
         bool reliable = false,
         const DdsReaderExecutorOptions &executor_options = {}) {
-        if (topic_channel == nullptr) {
-            std::cerr << "Failed to set reader: topic channel is null." << std::endl;
+        if (topic_channel == nullptr || subscriber_ == nullptr) {
+            std::cerr << "Failed to set reader: topic channel or subscriber is null." << std::endl;
             return;
         }
         DdsReaderCallback cb(handler);
-        auto reader_qos = reader_qos_;
+        // Read the default after Fast DDS has loaded the XML profile. Passing a
+        // copied DATAREADER_QOS_DEFAULT bypasses that profile in this Fast DDS version.
+        auto reader_qos = subscriber_->get_default_datareader_qos();
         if (reliable) {
             reader_qos.reliability().kind = booster_eprosima::fastdds::dds::RELIABLE_RELIABILITY_QOS;
         }

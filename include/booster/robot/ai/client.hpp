@@ -1,8 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <stdexcept>
+#include <string>
 
 #include <booster/robot/rpc/rpc_client.hpp>
+#include <booster/robot/rpc/rpc_operation_client.hpp>
 
 #include "api.hpp"
 
@@ -291,9 +294,7 @@ public:
      * @return Zero when ASR starts successfully; otherwise an RPC or LUI service
      * status code.
      */
-    int32_t StartAsr() {
-        return SendApiRequest(LuiApiId::kStartAsr, "");
-    }
+    int32_t StartAsr();
 
     /**
      * @brief Stops standalone automatic speech recognition.
@@ -302,9 +303,26 @@ public:
      * @return Zero when ASR stops successfully; otherwise an RPC or LUI service
      * status code.
      */
-    int32_t StopAsr() {
-        return SendApiRequest(LuiApiId::kStopAsr, "");
+    int32_t StopAsr();
+
+    const std::string &GetCurrentAsrSessionId() const {
+        return current_asr_session_id_;
     }
+
+    const std::string &GetCurrentAudioRecognizerSessionId() const {
+        return current_audio_recognizer_session_id_;
+    }
+
+    const std::string &GetCurrentTtsSessionId() const {
+        return current_tts_session_id_;
+    }
+
+    const std::string &GetClientInstanceId() const {
+        return client_instance_id_;
+    }
+
+    static bool IsAsrSessionActive(const std::string &session_id,
+                                   const std::string &client_id);
 
     /**
      * @brief Starts a standalone text-to-speech session.
@@ -312,6 +330,7 @@ public:
      * @note Requires a working speaker, audio service, network connection, and
      * valid cloud-service credentials.
      *
+     * This function creates a TTS session owned by this client instance.
      * The service initializes cloud synthesis and robot audio playback for the
      * selected voice. Call this method before SendTtsText().
      *
@@ -319,26 +338,24 @@ public:
      * @return Zero when TTS starts successfully; otherwise an RPC or LUI service
      * status code.
      */
-    int32_t StartTts(const LuiTtsConfig &config) {
-        std::string body = config.ToJson().dump();
-        return SendApiRequest(LuiApiId::kStartTts, body);
-    }
+    int32_t StartTts(const LuiTtsConfig &config);
 
     /**
      * @brief Stops the active standalone TTS session.
      * @note Supported model: K1 | T1 | T2
      *
+     * This function stops only the TTS session owned by this client instance.
+     *
      * @return Zero when TTS stops successfully; otherwise an RPC or LUI service
      * status code.
      */
-    int32_t StopTts() {
-        return SendApiRequest(LuiApiId::kStopTts, "");
-    }
+    int32_t StopTts();
 
     /**
      * @brief Sends text to the active standalone TTS session.
      * @note Supported model: K1 | T1 | T2
      *
+     * This function queues text in this client's existing TTS session.
      * The LUI service requires non-empty text and enforces at least one second
      * between accepted text requests. Requests sent too frequently may return
      * `kRpcStatusCodeRequestTooFrequent`.
@@ -349,14 +366,93 @@ public:
      *
      * @pre StartTts() has completed successfully.
      */
-    int32_t SendTtsText(const LuiTtsParameter &param) {
-        std::string body = param.ToJson().dump();
-        return SendApiRequest(LuiApiId::kSendTtsText, body);
-    }
+    int32_t SendTtsText(const LuiTtsParameter &param);
+
+    /**
+     * @brief Synthesize speech and return audio data.
+     *
+     * `StartTts()` must be called before invoking this method. This method
+     * reuses the current TTS session and waits for the synthesize operation to
+     * finish.
+     *
+     * @param req The synthesis request.
+     * @param[out] resp The synthesis result returned by LUI.
+     *
+     * @return 0 if success, otherwise return error code.
+     */
+    int32_t SynthesizeSpeech(const LuiSynthesizeSpeechRequest &req,
+                             LuiSynthesizeSpeechResponse &resp,
+                             std::string *error_message = nullptr);
+
+    /**
+     * @brief Recognize an audio file or PCM payload in one shot.
+     *
+     * Use `LuiRecognizeAudioRequest::FromFile()` for `.wav` or `.mp3` paths.
+     * Use `LuiRecognizeAudioRequest::FromPcmBase64()` only for base64-encoded
+     * 16kHz mono 16-bit little-endian raw PCM (`pcm_s16le`).
+     *
+     * @param req Recognition request.
+     * @param[out] resp Recognition result.
+     *
+     * @return 0 if success, otherwise return error code.
+     */
+    int32_t RecognizeAudioOnce(const LuiRecognizeAudioRequest &req,
+                               LuiRecognizeAudioResponse &resp,
+                               std::string *error_message = nullptr);
+
+    /**
+     * @brief Start a reusable audio recognizer session owned by this client.
+     *
+     * @return 0 if success, otherwise return error code.
+     */
+    int32_t StartAudioRecognizer();
+
+    /**
+     * @brief Stop only this client's reusable audio recognizer session.
+     *
+     * @return 0 if success, otherwise return error code.
+     */
+    int32_t StopAudioRecognizer();
+
+    /**
+     * @brief Recognize audio in this client's existing recognizer session.
+     *
+     * Use `LuiRecognizeAudioRequest::FromFile()` for `.wav` or `.mp3` paths.
+     * Use `LuiRecognizeAudioRequest::FromPcmBase64()` only for base64-encoded
+     * 16kHz mono 16-bit little-endian raw PCM (`pcm_s16le`).
+     *
+     * @param req Recognition request.
+     * @param[out] resp Recognition result.
+     *
+     * @return 0 if success, otherwise return error code.
+     */
+    int32_t RecognizeAudioInSession(const LuiRecognizeAudioRequest &req,
+                             LuiRecognizeAudioResponse &resp,
+                             std::string *error_message = nullptr);
 
 private:
+    bool WaitForOperationService(
+        int64_t timeout_ms = RpcClient::kDefaultWaitForServiceTimeoutMs,
+        bool require_event_path = true);
+    ApiOperationSubmitResult AsyncSendApiRequest(
+        LuiApiId api_id,
+        const std::string &param);
+    ApiOperationSubmitResult AsyncSendApiRequest(
+        LuiApiId api_id,
+        const std::string &param,
+        const SendApiRequestOptions &options);
+
     /** @brief Underlying synchronous DDS RPC transport, created by Init(). */
     std::shared_ptr<RpcClient> rpc_client_;
+    std::shared_ptr<RpcOperationClient> rpc_operation_client_;
+    std::string client_instance_id_;
+    std::string current_asr_session_id_;
+    std::string current_audio_recognizer_session_id_;
+    std::string current_tts_session_id_;
+    std::string current_tts_voice_type_;
+    bool asr_started_{false};
+    bool audio_recognizer_started_{false};
+    bool tts_started_{false};
 };
 
 }

@@ -36,7 +36,7 @@ public:
     /** @brief Closes the underlying writer. */
     void CloseChannel() {
         if (channel_ptr_) {
-            ChannelFactory::Instance()->CloseWriter(channel_name_);
+            channel_ptr_->CloseWriter();
             channel_ptr_.reset();
         }
     }

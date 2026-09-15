@@ -12,7 +12,10 @@ template <typename MSG>
 class DdsTopicChannel {
 public:
     DdsTopicChannel() = default;
-    ~DdsTopicChannel() = default;
+    ~DdsTopicChannel() {
+        CloseReader();
+        CloseWriter();
+    }
 
     void SetTopic(DdsTopicPtr topic) {
         topic_ = topic;
@@ -30,6 +33,8 @@ public:
             std::cerr << "Failed to create writer." << std::endl;
             return;
         }
+        CloseWriter();
+        writer_owner_ = publisher;
         writer_ = DdsWriterPtr(raw_writer, [](DdsWriter *writer) {});
     }
 
@@ -42,16 +47,18 @@ public:
             std::cerr << "Failed to create reader: subscriber or topic is not initialized." << std::endl;
             return;
         }
-        listener_ = std::make_shared<DdsReaderListener<MSG>>();
-        listener_->SetExecutorOptions(executor_options);
-        listener_->SetCallback(cb);
-        reader_ = DdsReaderPtr(
-            subscriber->create_datareader(topic_.get(), qos, listener_.get()),
-            [](DdsReader *reader) {});
-        if (reader_ == nullptr) {
+        auto listener = std::make_shared<DdsReaderListener<MSG>>();
+        listener->SetExecutorOptions(executor_options);
+        listener->SetCallback(cb);
+        auto raw_reader = subscriber->create_datareader(topic_.get(), qos, listener.get());
+        if (raw_reader == nullptr) {
             std::cerr << "Failed to create reader." << std::endl;
             return;
         }
+        CloseReader();
+        listener_ = listener;
+        reader_owner_ = subscriber;
+        reader_ = DdsReaderPtr(raw_reader, [](DdsReader *reader) {});
     }
 
     DdsWriterPtr GetWriter() const {
@@ -60,6 +67,23 @@ public:
 
     DdsReaderPtr GetReader() const {
         return reader_;
+    }
+
+    void CloseWriter() {
+        if (writer_owner_ != nullptr && writer_ != nullptr) {
+            writer_owner_->delete_datawriter(writer_.get());
+        }
+        writer_.reset();
+        writer_owner_.reset();
+    }
+
+    void CloseReader() {
+        if (reader_owner_ != nullptr && reader_ != nullptr) {
+            reader_owner_->delete_datareader(reader_.get());
+        }
+        reader_.reset();
+        reader_owner_.reset();
+        listener_.reset();
     }
 
     DdsReaderExecutorMetrics GetReaderExecutorMetrics() const {
@@ -111,6 +135,8 @@ private:
     DdsWriterPtr writer_;
     DdsReaderPtr reader_;
     DdsTopicPtr topic_;
+    DdsPublisherPtr writer_owner_;
+    DdsSubscriberPtr reader_owner_;
     DdsReaderListenerPtr<MSG> listener_;
 };
 

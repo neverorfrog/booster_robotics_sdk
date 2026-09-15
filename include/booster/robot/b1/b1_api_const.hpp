@@ -20,7 +20,7 @@ namespace b1 {
  * | --- | --- | --- |
  * | K1 | JointIndexK1 | kJointCntK1 (22) |
  * | T1 | JointIndex | kJointCnt (23) |
- * | T2 | JointIndexWith7DofArm | kJointCnt7DofArm (29) |
+ * | T1_7DofArm | JointIndexWith7DofArm | kJointCnt7DofArm (29) |
  */
 
 /** @brief Low-level joint-command topic. @note Supported model: K1 | T1 | T2 */
@@ -115,7 +115,7 @@ static const std::string kTopicRosJointStates = "rt/joint_states";
 /**
  * @brief Joint indices for the 23-joint T1 layout.
  * @note Supported model: T1
- * @note Use JointIndexK1 for K1 and JointIndexWith7DofArm for T2.
+ * @note Use JointIndexK1 for K1 and JointIndexWith7DofArm for T1_7DofArm.
  */
 enum class JointIndex {
     kHeadYaw = 0,            ///< Head yaw joint.
@@ -174,8 +174,8 @@ enum class JointIndexK1 {
 };
 
 /**
- * @brief Joint indices for the 29-joint T2 layout with two 7-DOF arms.
- * @note Supported model: T2
+ * @brief Joint indices for the 29-joint T1_7DofArm layout with two 7-DOF arms.
+ * @note Supported model: T1_7DofArm
  */
 enum class JointIndexWith7DofArm {
     kHeadYaw = 0,            ///< Head yaw joint.
@@ -210,7 +210,7 @@ enum class JointIndexWith7DofArm {
 };
 
 static const size_t kJointCnt = 23;        ///< Number of joints in the T1 layout.
-static const size_t kJointCnt7DofArm = 29; ///< Number of joints in the T2 layout.
+static const size_t kJointCnt7DofArm = 29; ///< Number of joints in the T1_7DofArm layout.
 static const size_t kJointCntK1 = 22;      ///< Number of joints in the K1 layout.
 
 /** @brief Selects the left or right hand. @note Supported model: K1 | T1 | T2 */

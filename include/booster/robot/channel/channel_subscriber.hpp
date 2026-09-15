@@ -88,7 +88,7 @@ public:
     /** @brief Closes the underlying reader. */
     void CloseChannel() {
         if (channel_ptr_) {
-            ChannelFactory::Instance()->CloseReader(channel_name_);
+            channel_ptr_->CloseReader();
             channel_ptr_.reset();
         }
     }
