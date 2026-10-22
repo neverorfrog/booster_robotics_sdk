@@ -90,9 +90,6 @@ static const std::string kTopicRobocupBehaviorStatus = "rt/robocup_behavior_stat
  * @note T2 has no visual-kick controller.
  */
 static const std::string kTopicKickReference = "rt/kick_ball";
-static const std::string kTopicRosOdometer = "rt/odom";
-static const std::string kTopicRosImu = "rt/imu/data";
-static const std::string kTopicRosJointStates = "rt/joint_states";
 
 /**
  * @brief ROS-compatible odometry topic.
