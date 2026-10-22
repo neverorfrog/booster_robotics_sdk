@@ -198,37 +198,6 @@ public:
     float yaw_;   ///< Target yaw angle in radians.
 };
 
-class RotateHeadWithTimeParameter {
-public:
-    RotateHeadWithTimeParameter() = default;
-
-    RotateHeadWithTimeParameter(float pitch, float yaw, int time_millis) :
-        pitch_(pitch),
-        yaw_(yaw),
-        time_millis_(time_millis) {
-    }
-
-public:
-    void FromJson(nlohmann::json &json) {
-        pitch_ = json["pitch"];
-        yaw_ = json["yaw"];
-        time_millis_ = json["time_millis"];
-    }
-
-    nlohmann::json ToJson() const {
-        nlohmann::json json;
-
-        json["pitch"] = pitch_;
-        json["yaw"] = yaw_;
-        json["time_millis"] = time_millis_;
-        return json;
-    }
-
-public:
-    float pitch_; ///< Target pitch angle in radians.
-    float yaw_;   ///< Target yaw angle in radians.
-};
-
 /** @brief Request payload for timed head rotation. */
 class RotateHeadWithTimeParameter {
 public:
